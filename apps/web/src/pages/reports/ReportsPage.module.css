@@ -1,0 +1,16 @@
+/* Matches .section-title from the HTML design */
+.sectionTitle {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.section {
+  margin-top: 20px;
+}
+
+.section:first-child {
+  margin-top: 0;
+}

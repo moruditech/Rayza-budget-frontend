@@ -1,0 +1,172 @@
+/* ── Pot row container ── */
+.potRow {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: var(--surface);
+  transition: box-shadow 0.15s;
+}
+
+.potRow + .potRow {
+  margin-top: 8px;
+}
+
+/* ── Pot header ── */
+.potHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px 10px;
+  cursor: pointer;
+  user-select: none;
+  gap: 8px;
+}
+
+.potHead:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.potName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  flex: 1;
+}
+
+.potDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.nameText {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.potType {
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+  flex-shrink: 0;
+}
+
+.potMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.potBudget {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* ── Chevron ── */
+.chevron {
+  width: 16px;
+  height: 16px;
+  stroke: var(--ink-muted);
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* ── Progress bar ── */
+.potProgress {
+  height: 3px;
+  border-radius: 100px;
+  margin: 0 14px 6px;
+  transition: width 0.3s ease;
+}
+
+.barGood { background: var(--primary); }
+.barWarn { background: var(--gold);    }
+.barOver { background: var(--warning); }
+
+/* ── Expanded detail ── */
+.potDetail {
+  padding: 4px 14px 14px;
+  border-top: 1px solid var(--border);
+}
+
+.noItems {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  padding: 10px 0;
+}
+
+/* ── Detail actions ── */
+.detailActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  gap: 10px;
+}
+
+.btnAddLineItem {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--primary);
+  transition: opacity 0.15s;
+}
+
+.btnAddLineItem:hover {
+  opacity: 0.75;
+}
+
+.potActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.potActionBtn {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+
+.potActionBtn:hover {
+  color: var(--ink);
+}
+
+.danger {
+  color: var(--warning);
+}
+
+.danger:hover {
+  color: var(--warning);
+  opacity: 0.8;
+}
+
+.deleteConfirm {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--warning);
+}

@@ -1,0 +1,110 @@
+/* ─── Design tokens ──────────────────────────────────────────────────────── */
+:root {
+  box-sizing: border-box;
+
+  /* Palette — light */
+  --bg:           #F6F7F3;
+  --surface:      #FFFFFF;
+  --ink:          #142019;
+  --ink-muted:    #5B6D62;
+  --primary:      #1F6F54;
+  --primary-soft: #DCEAE3;
+  --gold:         #AD7F2B;
+  --gold-soft:    #F0E4C8;
+  --warning:      #B8722B;
+  --warning-soft: #F3E3D2;
+  --border:       #E1E4DC;
+  --ring-track:   #E7E9E1;
+
+  /* Safe-area inset for notched devices */
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Dark mode — respects OS preference unless overridden by data-theme */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg:           #10160F;
+    --surface:      #171F19;
+    --ink:          #EAEDE8;
+    --ink-muted:    #9CAB9E;
+    --primary:      #4FAE8A;
+    --primary-soft: #1E3A2E;
+    --gold:         #E0B255;
+    --gold-soft:    #3A3021;
+    --warning:      #E0954F;
+    --warning-soft: #3B2E1E;
+    --border:       #26302A;
+    --ring-track:   #232C26;
+  }
+}
+
+/* Explicit dark override via toggle */
+:root[data-theme='dark'] {
+  --bg:           #10160F;
+  --surface:      #171F19;
+  --ink:          #EAEDE8;
+  --ink-muted:    #9CAB9E;
+  --primary:      #4FAE8A;
+  --primary-soft: #1E3A2E;
+  --gold:         #E0B255;
+  --gold-soft:    #3A3021;
+  --warning:      #E0954F;
+  --warning-soft: #3B2E1E;
+  --border:       #26302A;
+  --ring-track:   #232C26;
+}
+
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── App shell ──────────────────────────────────────────────────────────── */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+/* ─── Typography helpers ─────────────────────────────────────────────────── */
+.font-serif {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+/* ─── Focus ring ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ─── Scrollbar (Webkit) ─────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 100px;
+}

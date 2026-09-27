@@ -1,0 +1,77 @@
+/* ── Bar group container — fixed height, flex row ── */
+.barGroups {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  height: 140px;
+  margin-bottom: 6px;
+}
+
+/* ── Single month group ── */
+.barGroup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+/* ── Pair of bars inside a group ── */
+.bars {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 100%;
+}
+
+/* ── Individual bar ── */
+.bar {
+  flex: 1;
+  border-radius: 4px 4px 0 0;
+  min-height: 3px;
+  transition: height 0.3s ease;
+}
+
+.barIncome { background: var(--border); }
+.barSpent  { background: var(--primary); }
+
+/* ── Month label below bars ── */
+.barLabel {
+  font-size: 0.65rem;
+  color: var(--ink-muted);
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.bl {
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--ink-muted);
+}
+
+.bl::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.blIncome::before { background: var(--border); }
+.blSpent::before  { background: var(--primary); }
+
+/* ── Empty state ── */
+.empty {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  padding: 24px 0;
+  text-align: center;
+}

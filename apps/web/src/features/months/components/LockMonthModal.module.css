@@ -1,0 +1,100 @@
+.body {
+  display: grid;
+  gap: 14px;
+}
+
+.intro {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* ── Pot surplus decision card ── */
+.potDecision {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.potInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.potName {
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+.potSurplus {
+  font-size: 0.78rem;
+  color: var(--primary);
+  font-weight: 600;
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+/* ── RESET / ROLLOVER / SWEEP toggle row ── */
+.actionBtns {
+  display: flex;
+  gap: 6px;
+}
+
+.actionBtn {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--ink-muted);
+  background: var(--surface);
+  transition: all 0.15s;
+}
+
+.actionBtn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.actionBtnActive {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.actionBtnActive:hover {
+  color: #fff;
+  opacity: 0.9;
+}
+
+/* ── Success screen ── */
+.successBody {
+  display: grid;
+  gap: 10px;
+  text-align: center;
+  padding: 8px 0;
+}
+
+.successLabel {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+
+.successScore {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--primary);
+  line-height: 1;
+}
+
+.successHint {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}

@@ -1,0 +1,105 @@
+.list {
+  display: grid;
+  gap: 4px;
+  margin-top: 14px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+/* Label input — grows to fill remaining space */
+.incLabel {
+  flex: 1;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  padding: 4px 2px;
+  min-width: 0;
+  transition: border-color 0.15s;
+}
+
+.incLabel:hover:not(:disabled),
+.incLabel:focus {
+  border-bottom-color: var(--border);
+  outline: none;
+}
+
+.incLabel:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+/* Amount side — currency symbol + number input */
+.incAmt {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.cur {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-right: 1px;
+}
+
+.incAmtInput {
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1px dashed transparent;
+  padding: 4px 2px;
+  width: 80px;
+  text-align: right;
+  transition: border-color 0.15s;
+  /* Hide number spinners */
+  -moz-appearance: textfield;
+}
+
+.incAmtInput::-webkit-inner-spin-button,
+.incAmtInput::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.incAmtInput:hover:not(:disabled),
+.incAmtInput:focus {
+  border-bottom-color: var(--border);
+  outline: none;
+}
+
+.incAmtInput:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+/* Remove button — appears on row hover, invisible by default */
+.removeBtn {
+  all: unset;
+  cursor: pointer;
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  padding: 4px 5px;
+  border-radius: 6px;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.row:hover .removeBtn,
+.row:focus-within .removeBtn {
+  opacity: 1;
+}
+
+.removeBtn:hover {
+  color: var(--warning);
+}

@@ -1,0 +1,63 @@
+.list {
+  display: grid;
+  gap: 8px;
+}
+
+.btnCreate {
+  all: unset;
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+  text-align: center;
+  border: 1.5px dashed var(--border);
+  border-radius: 14px;
+  transition: border-color 0.15s, opacity 0.15s;
+}
+
+.btnCreate:hover {
+  border-color: var(--primary);
+  opacity: 0.85;
+}
+
+/* ── Empty state ── */
+.empty {
+  padding: 40px 0 20px;
+  text-align: center;
+}
+
+.emptyTitle {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.emptyHint {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  line-height: 1.5;
+}
+
+/* ── Skeleton ── */
+@keyframes pulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.4; }
+}
+
+.skeleton {
+  display: grid;
+  gap: 8px;
+}
+
+.skeletonCard {
+  height: 86px;
+  border-radius: 14px;
+  background: var(--border);
+  animation: pulse 1.4s ease-in-out infinite;
+}

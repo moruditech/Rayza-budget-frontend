@@ -1,0 +1,29 @@
+.note {
+  display: flex;
+  gap: 10px;
+  border-left: 3px solid var(--c);
+  background: var(--bg2);
+  color: var(--ink);
+  padding: 11px 14px;
+  border-radius: 0 10px 10px 0;
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+.icon {
+  flex: none;
+  margin-top: 2px;
+  display: flex;
+  align-items: flex-start;
+  color: var(--c);
+}
+
+.warn {
+  --c:   var(--warning);
+  --bg2: var(--warning-soft);
+}
+
+.ready {
+  --c:   var(--gold);
+  --bg2: var(--gold-soft);
+}

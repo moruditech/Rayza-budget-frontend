@@ -1,0 +1,133 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+/* ── Left indicator ── */
+.ringWrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-left: 14px;
+  margin-right: 6px;
+}
+
+/* ── Body ── */
+.body {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.name {
+  font-size: 0.875rem;
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+
+/* ── Actions ── */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* FR-06 — "Mark as used" chip — gold */
+.chipReady {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 100px;
+  background: var(--gold-soft);
+  color: var(--gold);
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.chipReady:hover {
+  opacity: 0.8;
+}
+
+/* FR-05 — "+ Log" chip — primary-soft, instant spend only */
+.chipLog {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 100px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.chipLog:hover {
+  opacity: 0.8;
+}
+
+/* ── Edit / delete — hover-reveal on pointer, always visible on touch ── */
+.rowBtns {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+@media (hover: hover) {
+  .rowBtns {
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .row:hover .rowBtns,
+  .row:focus-within .rowBtns {
+    opacity: 1;
+  }
+}
+
+.rowBtn {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  padding: 3px 6px;
+  border-radius: 6px;
+  transition: color 0.15s;
+}
+
+.rowBtn:hover {
+  color: var(--primary);
+}
+
+.rowBtnDanger:hover {
+  color: var(--warning);
+}

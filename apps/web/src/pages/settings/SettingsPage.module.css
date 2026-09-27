@@ -1,0 +1,41 @@
+.section {
+  margin-bottom: 28px;
+}
+
+.sectionTitle {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--ink);
+  margin-bottom: 12px;
+}
+
+.hint {
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.btnLogout {
+  all: unset;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--warning);
+  padding: 8px 16px;
+  border: 1px solid var(--warning-soft);
+  border-radius: 10px;
+  background: var(--warning-soft);
+  transition: opacity 0.15s;
+}
+
+.btnLogout:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.btnLogout:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

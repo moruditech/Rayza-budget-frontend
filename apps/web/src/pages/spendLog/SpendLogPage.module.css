@@ -1,0 +1,30 @@
+.loadMore {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.total {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  margin-top: 12px;
+}
+
+/* ── Skeleton ── */
+@keyframes pulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.4; }
+}
+
+.skeleton {
+  display: grid;
+  gap: 8px;
+}
+
+.skeletonRow {
+  height: 48px;
+  border-radius: 10px;
+  background: var(--border);
+  animation: pulse 1.4s ease-in-out infinite;
+}

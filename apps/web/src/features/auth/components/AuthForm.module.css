@@ -1,0 +1,21 @@
+.form {
+  display: grid;
+  gap: 12px;
+}
+
+.switchLink {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+
+.switchLink a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.switchLink a:hover {
+  text-decoration: underline;
+}
