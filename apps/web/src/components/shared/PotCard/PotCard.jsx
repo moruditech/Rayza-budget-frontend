@@ -125,6 +125,12 @@ export default function PotCard({ pot, monthId, isLocked }) {
           <span>Budget {formatCurrency(budget)}</span>
           <span>Spent {formatCurrency(spent)}</span>
           {committed > 0 && <span>In funds {formatCurrency(committed)}</span>}
+          {(pot.transferredIn ?? 0) > 0 && (
+            <span>Received {formatCurrency(pot.transferredIn)}</span>
+          )}
+          {(pot.transferredOut ?? 0) > 0 && (
+            <span>Moved out {formatCurrency(pot.transferredOut)}</span>
+          )}
         </div>
 
         {/* ── Progress bar ──────────────────────────────────────────── */}

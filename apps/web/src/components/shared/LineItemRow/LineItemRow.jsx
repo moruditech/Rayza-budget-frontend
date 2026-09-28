@@ -9,6 +9,8 @@ import TransactionForm from '../../../features/transactions/components/Transacti
 import Modal from '../../ui/Modal/Modal';
 import { useDeleteLineItem } from '../../../features/lineItems/hooks/useLineItems';
 import { formatCurrency } from '../../../utils/formatCurrency';
+import { shortDate } from '../../../utils/formatDate';
+import { describeFundEntry } from '../../../utils/fundActivityText';
 import styles from './LineItemRow.module.css';
 
 // Maps pot type → CSS custom property for the instant-spend dot colour.
@@ -29,12 +31,14 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const [showLogSpend,  setShowLogSpend]  = useState(false);
   const [showWithdraw,  setShowWithdraw]  = useState(false);
   const [showTransfer,  setShowTransfer]  = useState(false);
+  const [showHistory,   setShowHistory]   = useState(false);
 
   const deleteMutation = useDeleteLineItem(monthId, pot._id);
   const isSinking      = lineItem.type === LINE_ITEM_TYPES.SINKING_FUND;
   const dotColor       = TYPE_COLOR[pot.type] ?? '--primary';
   const balance        = lineItem.accumulatedBalance ?? 0;
   const projection     = lineItem.projection;
+  const activity       = lineItem.activity ?? [];
 
   return (
     <>
@@ -107,6 +111,32 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
                 Move
               </button>
             </div>
+          )}
+
+          {/* History: what was received, withdrawn or moved, and where to/from */}
+          {isSinking && activity.length > 0 && (
+            <>
+              <button
+                className={styles.historyToggle}
+                onClick={() => setShowHistory((v) => !v)}
+                aria-expanded={showHistory}
+                type="button"
+              >
+                {showHistory ? 'Hide history' : `History (${activity.length})`}
+              </button>
+              {showHistory && (
+                <ul className={styles.history}>
+                  {activity.map((entry) => (
+                    <li key={entry._id} className={styles.historyItem}>
+                      <span className={entry.type === 'TRANSFER_IN' ? styles.historyIn : styles.historyOut}>
+                        {describeFundEntry(entry)}
+                      </span>
+                      <span className={styles.historyDate}>{shortDate(entry.date)}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </>
           )}
         </div>
 

@@ -4,6 +4,7 @@ import TransactionForm from '../../../features/transactions/components/Transacti
 import Modal from '../../ui/Modal/Modal';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import { shortDate } from '../../../utils/formatDate';
+import { describeFundEntry } from '../../../utils/fundActivityText';
 import styles from './SpendLogTable.module.css';
 
 // Maps pot type → CSS custom property for the icon circle colour.
@@ -60,7 +61,10 @@ function TxnRow({ entry, monthId, isLocked }) {
             {entry.pot?.name}
             {entry.date ? ` · ${shortDate(entry.date)}` : ''}
           </span>
-          {entry.note && (
+          {!isSpend && (
+            <span className={styles.txnNote}>{describeFundEntry(entry)}</span>
+          )}
+          {isSpend && entry.note && (
             <span className={styles.txnNote}>{entry.note}</span>
           )}
         </div>
