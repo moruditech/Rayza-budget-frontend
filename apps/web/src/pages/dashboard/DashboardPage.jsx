@@ -61,10 +61,9 @@ export default function DashboardPage() {
     isLocked,
   } = month;
 
-  const totalSpent = pots.reduce((s, p) => s + (p.spentAmount ?? 0), 0);
-  const totalSavedInvested = pots
-    .filter((p) => p.type === 'SAVING' || p.type === 'INVESTMENT')
-    .reduce((s, p) => s + (p.spentAmount ?? 0), 0);
+  // "Used" = spent + money allocated to sinking funds (it has left the pot).
+  const totalSpent = pots.reduce((s, p) => s + (p.usedAmount ?? p.spentAmount ?? 0), 0);
+  const totalSavedInvested = pots.reduce((s, p) => s + (p.committedAmount ?? 0), 0);
   const daysLeft = daysLeftInMonth(year, monthNum);
   const isOverAllocated = unallocatedIncome < 0;
 

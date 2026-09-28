@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { LINE_ITEM_TYPES } from '@budget-app/shared';
 import ProgressRing from '../../ui/ProgressRing/ProgressRing';
 import MarkUsedModal from '../../../features/lineItems/components/MarkUsedModal';
+import WithdrawModal from '../../../features/lineItems/components/WithdrawModal';
+import TransferModal from '../../../features/lineItems/components/TransferModal';
 import LineItemForm from '../../../features/lineItems/components/LineItemForm';
 import TransactionForm from '../../../features/transactions/components/TransactionForm';
 import Modal from '../../ui/Modal/Modal';
@@ -16,14 +18,23 @@ const TYPE_COLOR = {
   INVESTMENT: '--gold',
 };
 
+function formatTargetDate(value) {
+  if (!value) return '';
+  return new Date(value).toLocaleDateString('en-ZA', { month: 'short', year: 'numeric' });
+}
+
 export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const [showMarkUsed,  setShowMarkUsed]  = useState(false);
   const [showEditForm,  setShowEditForm]  = useState(false);
   const [showLogSpend,  setShowLogSpend]  = useState(false);
+  const [showWithdraw,  setShowWithdraw]  = useState(false);
+  const [showTransfer,  setShowTransfer]  = useState(false);
 
   const deleteMutation = useDeleteLineItem(monthId, pot._id);
   const isSinking      = lineItem.type === LINE_ITEM_TYPES.SINKING_FUND;
   const dotColor       = TYPE_COLOR[pot.type] ?? '--primary';
+  const balance        = lineItem.accumulatedBalance ?? 0;
+  const projection     = lineItem.projection;
 
   return (
     <>
@@ -57,21 +68,50 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
               {formatCurrency(lineItem.allocatedAmount)} used
             </span>
           )}
+
+          {/* Interest-bearing fund: projected future value beside the balance */}
+          {isSinking && projection && (
+            <span className={styles.projection}>
+              Projected {formatCurrency(projection.projectedFutureValue)} by{' '}
+              {formatTargetDate(projection.targetDate)} · {projection.annualInterestRate}% p.a.
+              {' '}(+{formatCurrency(projection.projectedInterest)} interest)
+            </span>
+          )}
+
+          {/* Withdraw / move — allowed at any time, before or after the target */}
+          {isSinking && !isLocked && (
+            <div className={styles.fundChips}>
+              {lineItem.isReadyToUse && (
+                <button
+                  className={styles.chipReady}
+                  onClick={() => setShowMarkUsed(true)}
+                  type="button"
+                >
+                  Mark as used
+                </button>
+              )}
+              <button
+                className={styles.chipFund}
+                onClick={() => setShowWithdraw(true)}
+                disabled={balance <= 0}
+                type="button"
+              >
+                Withdraw
+              </button>
+              <button
+                className={styles.chipFund}
+                onClick={() => setShowTransfer(true)}
+                disabled={balance <= 0}
+                type="button"
+              >
+                Move
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Actions */}
         <div className={styles.actions}>
-          {/* FR-06 — Mark as used chip for ready sinking funds */}
-          {isSinking && lineItem.isReadyToUse && !isLocked && (
-            <button
-              className={styles.chipReady}
-              onClick={() => setShowMarkUsed(true)}
-              type="button"
-            >
-              Mark as used
-            </button>
-          )}
-
           {/* FR-05 — Log spend chip for instant spend line items */}
           {!isSinking && !isLocked && (
             <button
@@ -115,6 +155,23 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
           potId={pot._id}
           monthId={monthId}
           onClose={() => setShowMarkUsed(false)}
+        />
+      )}
+
+      {showWithdraw && (
+        <WithdrawModal
+          lineItem={lineItem}
+          potId={pot._id}
+          monthId={monthId}
+          onClose={() => setShowWithdraw(false)}
+        />
+      )}
+
+      {showTransfer && (
+        <TransferModal
+          lineItem={lineItem}
+          monthId={monthId}
+          onClose={() => setShowTransfer(false)}
         />
       )}
 

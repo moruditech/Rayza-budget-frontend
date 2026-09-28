@@ -40,10 +40,29 @@ async function markUsed(monthId, potId, id, payload) {
   return data.data;
 }
 
+// Withdraw from a SINKING_FUND at any time (before or after its target).
+// Reduces the accumulated balance and writes a spend log entry.
+async function withdraw(monthId, potId, id, payload) {
+  const { data } = await api.post(
+    `/months/${monthId}/pots/${potId}/line-items/${id}/withdraw`,
+    payload
+  );
+  return data.data;
+}
+
+// Move money from one sinking fund to another within the same month.
+// payload: { fromLineItemId, toLineItemId, amount, note? }
+async function transfer(monthId, payload) {
+  const { data } = await api.post(`/months/${monthId}/transfers`, payload);
+  return data.data;
+}
+
 const lineItemsService = {
   createLineItem,
   updateLineItem,
   deleteLineItem,
   markUsed,
+  withdraw,
+  transfer,
 };
 export default lineItemsService;

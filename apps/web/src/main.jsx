@@ -51,6 +51,16 @@ function AuthInitializer({ children }) {
   return children;
 }
 
+// ─── PWA service worker ────────────────────────────────────────────────────
+// Production only: in dev it would cache stale modules and fight Vite's HMR.
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      // Not fatal — the app simply won't be installable/offline-capable.
+    });
+  });
+}
+
 // ─── Mount ─────────────────────────────────────────────────────────────────
 createRoot(document.getElementById('root')).render(
   <StrictMode>

@@ -22,6 +22,14 @@ const PM_LABEL = {
   OTHER: 'Other',
 };
 
+// Non-spend entries (fund withdrawals and transfers) get a small label and
+// can't be edited as transactions.
+const TYPE_LABEL = {
+  SINKING_FUND_USED: 'Withdrawal',
+  TRANSFER_OUT:      'Transfer out',
+  TRANSFER_IN:       'Transfer in',
+};
+
 // ── Single transaction row ─────────────────────────────────────────────────
 function TxnRow({ entry, monthId, isLocked }) {
   const [showEdit, setShowEdit] = useState(false);
@@ -31,6 +39,8 @@ function TxnRow({ entry, monthId, isLocked }) {
 
   const deleteMutation = useDeleteTransaction(monthId, potId, lineItemId);
   const iconColor = `var(${TYPE_COLOR[entry.pot?.type] ?? '--primary'})`;
+  const isSpend   = !entry.type || entry.type === 'INSTANT_SPEND';
+  const isIncoming = entry.type === 'TRANSFER_IN';
 
   return (
     <>
@@ -46,6 +56,7 @@ function TxnRow({ entry, monthId, isLocked }) {
         <div className={styles.txnBody}>
           <b className={styles.txnName}>{entry.lineItem?.name}</b>
           <span className={styles.txnMeta}>
+            {TYPE_LABEL[entry.type] ? `${TYPE_LABEL[entry.type]} · ` : ''}
             {entry.pot?.name}
             {entry.date ? ` · ${shortDate(entry.date)}` : ''}
           </span>
@@ -57,15 +68,17 @@ function TxnRow({ entry, monthId, isLocked }) {
         {/* Right — amount + payment method badge + actions */}
         <div className={styles.txnRight}>
           <b className={styles.txnAmount}>
-            −{formatCurrency(entry.amount)}
+            {isIncoming ? '+' : '−'}{formatCurrency(entry.amount)}
           </b>
-          <span className={styles.txnPm}>
-            {PM_LABEL[entry.paymentMethod] ?? entry.paymentMethod}
-          </span>
+          {isSpend && (
+            <span className={styles.txnPm}>
+              {PM_LABEL[entry.paymentMethod] ?? entry.paymentMethod}
+            </span>
+          )}
 
           {/* Edit / delete — hidden until hover on pointer devices,
               always visible on touch devices (see CSS media query) */}
-          {!isLocked && (
+          {!isLocked && isSpend && (
             <div className={styles.txnActions}>
               <button
                 className={styles.txnBtn}

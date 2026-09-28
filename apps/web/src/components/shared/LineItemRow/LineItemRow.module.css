@@ -131,3 +131,41 @@
 .rowBtnDanger:hover {
   color: var(--warning);
 }
+
+/* Projected future value — interest-bearing sinking funds only */
+.projection {
+  font-size: 0.73rem;
+  line-height: 1.35;
+  color: var(--primary);
+}
+
+/* Withdraw / Move chips under a sinking fund */
+.fundChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.chipFund {
+  all: unset;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--ink-muted);
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.chipFund:hover:not(:disabled) {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.chipFund:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

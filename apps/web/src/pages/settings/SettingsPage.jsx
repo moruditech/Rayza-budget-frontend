@@ -1,3 +1,4 @@
+import InstallAppCard from '../../features/pwa/InstallAppCard';
 import ChangePasswordForm from '../../features/auth/components/ChangePasswordForm';
 import { useLogoutMutation } from '../../features/auth/hooks/useAuth';
 import styles from './SettingsPage.module.css';
@@ -7,6 +8,9 @@ export default function SettingsPage() {
 
   return (
     <>
+      {/* Install as a phone app (PWA) */}
+      <InstallAppCard />
+
       {/* Change password */}
       <section className={styles.section}>
         <h3 className={styles.sectionTitle}>Change password</h3>

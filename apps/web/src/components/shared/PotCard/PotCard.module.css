@@ -170,3 +170,30 @@
   font-size: 0.75rem;
   color: var(--warning);
 }
+
+/* ── Remaining ("left") figure ── */
+.potLeftWrap {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.potLeftLabel {
+  font-size: 0.7rem;
+  color: var(--ink-muted);
+}
+
+.potBudgetOver {
+  color: var(--warning);
+}
+
+/* ── Budget / spent / in-funds breakdown under the header ── */
+.potSummary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 0 14px 8px;
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+  cursor: pointer;
+}

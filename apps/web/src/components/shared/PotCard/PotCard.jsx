@@ -52,9 +52,12 @@ export default function PotCard({ pot, monthId, isLocked }) {
 
   const deleteMutation = useDeletePot(monthId);
 
-  const spent  = pot.spentAmount  ?? 0;
-  const budget = pot.budgetLimit  ?? 0;
-  const pct    = calcPercentage(spent, budget);
+  const spent     = pot.spentAmount     ?? 0;
+  const committed = pot.committedAmount ?? 0; // allocated to sinking funds
+  const used      = pot.usedAmount      ?? spent + committed;
+  const budget    = pot.budgetLimit     ?? 0;
+  const remaining = pot.remaining       ?? budget - used;
+  const pct       = calcPercentage(used, budget);
   const color  = TYPE_COLOR[pot.type] ?? '--primary';
 
   // First attempt — no force. If the API returns POT_HAS_HISTORY, we
@@ -102,9 +105,26 @@ export default function PotCard({ pot, monthId, isLocked }) {
           </div>
 
           <div className={styles.potMeta}>
-            <span className={styles.potBudget}>{formatCurrency(budget)}</span>
+            <div className={styles.potLeftWrap}>
+              <span
+                className={[styles.potBudget, remaining < 0 ? styles.potBudgetOver : ''].join(' ')}
+              >
+                {formatCurrency(remaining)}
+              </span>
+              <span className={styles.potLeftLabel}>left</span>
+            </div>
             <ChevronIcon open={expanded} />
           </div>
+        </div>
+
+        {/* ── Where the budget went ─────────────────────────────────── */}
+        <div
+          className={styles.potSummary}
+          onClick={() => setExpanded((v) => !v)}
+        >
+          <span>Budget {formatCurrency(budget)}</span>
+          <span>Spent {formatCurrency(spent)}</span>
+          {committed > 0 && <span>In funds {formatCurrency(committed)}</span>}
         </div>
 
         {/* ── Progress bar ──────────────────────────────────────────── */}
@@ -115,7 +135,7 @@ export default function PotCard({ pot, monthId, isLocked }) {
           aria-valuenow={Math.round(pct)}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={`${pot.name} — ${Math.round(pct)}% of budget used`}
+          aria-label={`${pot.name} — ${Math.round(pct)}% of budget used, ${formatCurrency(remaining)} left`}
         />
 
         {/* ── Expanded detail ───────────────────────────────────────── */}

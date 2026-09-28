@@ -23,10 +23,10 @@ const schema = z
       .number({ invalid_type_error: 'Enter a number' })
       .positive()
       .optional(),
-    monthlyContribution: z
-      .number({ invalid_type_error: 'Enter a number' })
-      .positive()
-      .optional(),
+    // Interest is optional per fund: only funds that earn interest get a rate.
+    earnsInterest:      z.boolean().optional().default(false),
+    annualInterestRate: z.number().min(0, 'Cannot be negative').max(100, 'Max 100%').nullable().optional(),
+    targetDate:         z.string().nullable().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.type === LINE_ITEM_TYPES.SINKING_FUND) {
@@ -37,12 +37,21 @@ const schema = z
           message: 'Target amount is required for a sinking fund',
         });
       }
-      if (!data.monthlyContribution) {
-        ctx.addIssue({
-          code: 'custom',
-          path: ['monthlyContribution'],
-          message: 'Monthly contribution is required for a sinking fund',
-        });
+      if (data.earnsInterest) {
+        if (data.annualInterestRate == null) {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['annualInterestRate'],
+            message: 'Enter the fixed annual rate',
+          });
+        }
+        if (!data.targetDate) {
+          ctx.addIssue({
+            code: 'custom',
+            path: ['targetDate'],
+            message: 'Pick the date to project to',
+          });
+        }
       }
     }
   });
@@ -72,7 +81,9 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
           allocatedAmount:     lineItem.allocatedAmount,
           isRecurring:         lineItem.isRecurring,
           targetAmount:        lineItem.targetAmount ?? undefined,
-          monthlyContribution: lineItem.monthlyContribution ?? undefined,
+          earnsInterest:       lineItem.annualInterestRate != null,
+          annualInterestRate:  lineItem.annualInterestRate ?? null,
+          targetDate:          lineItem.targetDate ? String(lineItem.targetDate).slice(0, 10) : null,
         }
       : {
           type:        LINE_ITEM_TYPES.INSTANT_SPEND,
@@ -105,10 +116,15 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
 
   const onSubmit = (formData) => {
     // Strip sinking-fund-only fields when submitting an INSTANT_SPEND item.
-    const payload = { ...formData };
+    const { earnsInterest: interestOn, ...payload } = formData;
     if (payload.type === LINE_ITEM_TYPES.INSTANT_SPEND) {
       delete payload.targetAmount;
-      delete payload.monthlyContribution;
+      delete payload.annualInterestRate;
+      delete payload.targetDate;
+    } else if (!interestOn) {
+      // null clears any previously saved rate when editing a fund.
+      payload.annualInterestRate = null;
+      payload.targetDate = null;
     }
 
     if (isEditing) {
@@ -124,6 +140,7 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
   };
 
   const isSinking = itemType === LINE_ITEM_TYPES.SINKING_FUND;
+  const earnsInterest = watch('earnsInterest');
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} style={{ display: 'grid', gap: 12 }}>
@@ -150,7 +167,7 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
       </Select>
 
       <Input
-        label="Allocated amount"
+        label={isSinking ? 'Amount to put in this month' : 'Allocated amount'}
         type="number"
         inputMode="numeric"
         placeholder="0"
@@ -169,14 +186,39 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
             error={errors.targetAmount?.message}
             {...register('targetAmount', { valueAsNumber: true })}
           />
-          <Input
-            label="Monthly contribution"
-            type="number"
-            inputMode="numeric"
-            placeholder="0"
-            error={errors.monthlyContribution?.message}
-            {...register('monthlyContribution', { valueAsNumber: true })}
-          />
+          <p className={styles.hint}>
+            The amount above goes into this fund straight away and counts as
+            used in the pot. It is also added again every month.
+          </p>
+
+          <label className={styles.checkRow}>
+            <input type="checkbox" {...register('earnsInterest')} />
+            <span>This fund earns interest</span>
+          </label>
+
+          {earnsInterest && (
+            <>
+              <Input
+                id="annual-interest-rate"
+                label="Fixed annual interest rate (%)"
+                type="number"
+                inputMode="decimal"
+                step="0.01"
+                placeholder="e.g. 8.5"
+                error={errors.annualInterestRate?.message}
+                {...register('annualInterestRate', {
+                  setValueAs: (v) => (v === '' || v == null ? null : Number(v)),
+                })}
+              />
+              <Input
+                id="projection-date"
+                label="Project future value up to"
+                type="date"
+                error={errors.targetDate?.message}
+                {...register('targetDate', { setValueAs: (v) => (v ? v : null) })}
+              />
+            </>
+          )}
         </div>
       )}
 

@@ -8,6 +8,8 @@ function useInvalidate(monthId) {
   return () => {
     queryClient.invalidateQueries({ queryKey: ['month', monthId] });
     queryClient.invalidateQueries({ queryKey: ['alerts'] });
+    // Withdrawals and transfers add entries to the Activity tab.
+    queryClient.invalidateQueries({ queryKey: ['spendLog'] });
   };
 }
 
@@ -48,6 +50,25 @@ export function useMarkUsed(monthId, potId) {
   return useMutation({
     mutationFn: ({ id, ...payload }) =>
       lineItemsService.markUsed(monthId, potId, id, payload),
+    onSuccess: invalidate,
+  });
+}
+
+// Withdraw from a sinking fund at any time — reduces the balance and logs it.
+export function useWithdraw(monthId, potId) {
+  const invalidate = useInvalidate(monthId);
+  return useMutation({
+    mutationFn: ({ id, ...payload }) =>
+      lineItemsService.withdraw(monthId, potId, id, payload),
+    onSuccess: invalidate,
+  });
+}
+
+// Move money between two sinking funds — one goes down, the other goes up.
+export function useTransfer(monthId) {
+  const invalidate = useInvalidate(monthId);
+  return useMutation({
+    mutationFn: (payload) => lineItemsService.transfer(monthId, payload),
     onSuccess: invalidate,
   });
 }

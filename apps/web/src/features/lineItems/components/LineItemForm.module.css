@@ -7,6 +7,12 @@
   border: 1px solid var(--border);
 }
 
+.hint {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
 .checkRow {
   display: flex;
   align-items: center;
