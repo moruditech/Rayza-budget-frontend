@@ -62,3 +62,10 @@
   background: var(--border);
   animation: pulse 1.4s ease-in-out infinite;
 }
+
+.emptyLink {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.emptyLink:hover { text-decoration: underline; }

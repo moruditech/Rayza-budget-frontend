@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useMonthStore } from '../../store/monthStore';
 import { useMonth } from '../../features/months/hooks/useMonth';
 import { useAlerts } from '../../features/alerts/hooks/useAlerts';
@@ -10,27 +11,21 @@ import Modal from '../../components/ui/Modal/Modal';
 import { formatCurrency } from '../../utils/formatCurrency';
 import styles from './DashboardPage.module.css';
 
-// ── Helpers ──────────────────────────────────────────────────────────────
-
-// Returns calendar days remaining in the given month, or null if the
-// active month is not the current one (past/future months get a dash).
 function daysLeftInMonth(year, month) {
   const now = new Date();
-  const isNow =
-    now.getFullYear() === year && now.getMonth() + 1 === month;
+  const isNow = now.getFullYear() === year && now.getMonth() + 1 === month;
   if (!isNow) return null;
   const lastDay = new Date(year, month, 0).getDate();
   return Math.max(lastDay - now.getDate(), 0);
 }
-
-// ── Empty / loading states ────────────────────────────────────────────────
 
 function NoMonth() {
   return (
     <div className={styles.empty}>
       <p className={styles.emptyTitle}>No budget for this period</p>
       <p className={styles.emptyHint}>
-        Create a month from the Months screen to get started.
+        <Link to="/months" className={styles.emptyLink}>Create a month</Link>{' '}
+        to get started.
       </p>
     </div>
   );
@@ -47,53 +42,42 @@ function Skeleton() {
   );
 }
 
-// ── Dashboard ─────────────────────────────────────────────────────────────
-
 export default function DashboardPage() {
   const { activeMonthId } = useMonthStore();
   const { data: month, isLoading } = useMonth(activeMonthId);
-  const { data: alerts = [] }      = useAlerts();
+  const { data: alerts = [] } = useAlerts();
   const [showIncomeModal, setShowIncomeModal] = useState(false);
 
   if (!activeMonthId) return <NoMonth />;
-  if (isLoading)      return <Skeleton />;
+  if (isLoading) return <Skeleton />;
 
   const {
     year,
-    month:  monthNum,
-    income        = [],
-    pots          = [],
-    totalIncome   = 0,
+    month: monthNum,
+    income = [],
+    pots = [],
+    totalIncome = 0,
     unallocatedIncome = 0,
     isLocked,
   } = month;
 
-  // ── Derived stats ──────────────────────────────────────────────────────
-  // FR-11 — dashboard stat values are always derived from server data.
   const totalSpent = pots.reduce((s, p) => s + (p.spentAmount ?? 0), 0);
-
   const totalSavedInvested = pots
     .filter((p) => p.type === 'SAVING' || p.type === 'INVESTMENT')
     .reduce((s, p) => s + (p.spentAmount ?? 0), 0);
-
   const daysLeft = daysLeftInMonth(year, monthNum);
-
-  // Unallocated is negative when over-allocated.
   const isOverAllocated = unallocatedIncome < 0;
 
   return (
     <>
-      {/* ── Hero card ────────────────────────────────────────────────── */}
       <div className={styles.hero}>
         <p className={styles.heroLabel}>Total income</p>
         <p className={styles.heroAmount}>{formatCurrency(totalIncome)}</p>
-
         <IncomeBar
           pots={pots}
           totalIncome={totalIncome}
           unallocatedIncome={unallocatedIncome}
         />
-
         <p
           className={styles.heroCaption}
           style={{ color: isOverAllocated ? 'var(--warning)' : undefined }}
@@ -104,12 +88,7 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* ── Income list ──────────────────────────────────────────────── */}
-      <IncomeList
-        income={income}
-        monthId={activeMonthId}
-        isLocked={isLocked}
-      />
+      <IncomeList income={income} monthId={activeMonthId} isLocked={isLocked} />
 
       {!isLocked && (
         <button
@@ -121,8 +100,6 @@ export default function DashboardPage() {
         </button>
       )}
 
-      {/* ── Stats ────────────────────────────────────────────────────── */}
-      {/* FR-11 */}
       <div className={styles.stats}>
         <div className={styles.stat}>
           <b>{formatCurrency(totalSpent)}</b>
@@ -138,8 +115,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* ── Alerts ───────────────────────────────────────────────────── */}
-      {/* FR-13 */}
       {alerts.length > 0 && (
         <div className={styles.alerts}>
           {alerts.map((alert, i) => (
@@ -148,7 +123,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ── Add income modal ─────────────────────────────────────────── */}
       {showIncomeModal && (
         <Modal
           title="Add income source"

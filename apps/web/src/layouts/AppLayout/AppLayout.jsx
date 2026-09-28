@@ -47,11 +47,7 @@ function BrandIcon() {
 }
 function IconSettings() {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={styles.settingsIcon}
-      aria-hidden="true"
-    >
+    <svg viewBox="0 0 24 24" className={styles.settingsIcon} aria-hidden="true">
       <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
       <circle cx="12" cy="12" r="3" />
     </svg>
@@ -80,9 +76,10 @@ export default function AppLayout() {
     if (target) setActiveMonth(target._id);
   }, [months, activeMonthId, setActiveMonth]);
 
-  // Header data from the list summary — no extra API call needed.
   const activeSummary = months?.find((m) => m._id === activeMonthId);
-  const label = activeSummary ? monthLabel(activeSummary.year, activeSummary.month) : '';
+  const label = activeSummary
+    ? monthLabel(activeSummary.year, activeSummary.month)
+    : null;
   const score = activeSummary?.healthScore;
 
   return (
@@ -95,14 +92,16 @@ export default function AppLayout() {
         </div>
 
         <div className={styles.topRight}>
-          {/* Month label — links to /months so users can switch or manage months */}
-          {label && (
-            <Link to="/months" className={styles.monthLabel}>
-              {label}
-            </Link>
-          )}
+          {/*
+            Always render the months link so a new user with zero months
+            can still reach the Months page to create their first month.
+            Shows the active month label when one exists, otherwise a
+            "Months" fallback so the link is always present.
+          */}
+          <Link to="/months" className={styles.monthLabel}>
+            {label ?? 'Months'}
+          </Link>
 
-          {/* FR-12 — health score chip, shown only after a month is locked */}
           {score != null && (
             <span className={styles.healthChip}>
               <strong>{score}</strong>{' '}
@@ -110,12 +109,7 @@ export default function AppLayout() {
             </span>
           )}
 
-          {/* Settings shortcut */}
-          <Link
-            to="/settings"
-            className={styles.settingsLink}
-            aria-label="Settings"
-          >
+          <Link to="/settings" className={styles.settingsLink} aria-label="Settings">
             <IconSettings />
           </Link>
         </div>

@@ -134,3 +134,10 @@
   height: 72px;
   margin-top: 4px;
 }
+
+.emptyLink {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+.emptyLink:hover { text-decoration: underline; }
