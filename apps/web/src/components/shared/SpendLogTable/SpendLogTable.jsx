@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ConfirmDialog from '../../ui/ConfirmDialog/ConfirmDialog';
 import { useDeleteTransaction } from '../../../features/transactions/hooks/useTransactions';
 import TransactionForm from '../../../features/transactions/components/TransactionForm';
 import Modal from '../../ui/Modal/Modal';
@@ -35,6 +36,7 @@ const TYPE_LABEL = {
 // ── Single transaction row ─────────────────────────────────────────────────
 function TxnRow({ entry, monthId, isLocked }) {
   const [showEdit, setShowEdit] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const potId      = entry.pot?._id;
   const lineItemId = entry.lineItem?._id;
@@ -95,7 +97,7 @@ function TxnRow({ entry, monthId, isLocked }) {
               </button>
               <button
                 className={[styles.txnBtn, styles.txnBtnDanger].join(' ')}
-                onClick={() => deleteMutation.mutate(entry._id)}
+                onClick={() => setConfirmDelete(true)}
                 disabled={deleteMutation.isPending}
                 type="button"
                 aria-label="Delete transaction"
@@ -106,6 +108,24 @@ function TxnRow({ entry, monthId, isLocked }) {
           )}
         </div>
       </div>
+
+      {confirmDelete && (
+        <ConfirmDialog
+          title="Delete this transaction?"
+          loading={deleteMutation.isPending}
+          error={
+            deleteMutation.isError ? 'Could not delete the transaction. Please try again.' : null
+          }
+          onConfirm={() =>
+            deleteMutation.mutate(entry._id, { onSuccess: () => setConfirmDelete(false) })
+          }
+          onClose={() => setConfirmDelete(false)}
+        >
+          <strong>{formatCurrency(entry.amount)}</strong> on{' '}
+          <strong>{entry.lineItem?.name}</strong> will be removed and the money goes back
+          to the pot. This cannot be undone.
+        </ConfirmDialog>
+      )}
 
       {showEdit && (
         <Modal title="Edit transaction" onClose={() => setShowEdit(false)}>

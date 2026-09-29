@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useUpdateIncome, useDeleteIncome } from '../hooks/useIncome';
+import ConfirmDialog from '../../../components/ui/ConfirmDialog/ConfirmDialog';
+import { formatCurrency } from '../../../utils/formatCurrency';
 import styles from './IncomeList.module.css';
 
 // One editable row per income source.
@@ -7,6 +9,7 @@ import styles from './IncomeList.module.css';
 function IncomeRow({ item, monthId, isLocked }) {
   const [label, setLabel]   = useState(item.label);
   const [amount, setAmount] = useState(String(item.amount));
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const updateMutation = useUpdateIncome(monthId);
   const deleteMutation = useDeleteIncome(monthId);
@@ -70,7 +73,7 @@ function IncomeRow({ item, monthId, isLocked }) {
       {!isLocked && (
         <button
           className={styles.removeBtn}
-          onClick={() => deleteMutation.mutate(item._id)}
+          onClick={() => setConfirmDelete(true)}
           disabled={deleteMutation.isPending}
           aria-label={`Remove ${item.label}`}
           type="button"
@@ -78,6 +81,24 @@ function IncomeRow({ item, monthId, isLocked }) {
         >
           ✕
         </button>
+      )}
+
+      {confirmDelete && (
+        <ConfirmDialog
+          title={`Remove ${item.label}?`}
+          confirmLabel="Remove"
+          loading={deleteMutation.isPending}
+          error={
+            deleteMutation.isError ? 'Could not remove this income. Please try again.' : null
+          }
+          onConfirm={() =>
+            deleteMutation.mutate(item._id, { onSuccess: () => setConfirmDelete(false) })
+          }
+          onClose={() => setConfirmDelete(false)}
+        >
+          <strong>{item.label}</strong> ({formatCurrency(item.amount)}) will be removed from
+          this month&apos;s income, which lowers what you have available to allocate.
+        </ConfirmDialog>
       )}
     </div>
   );

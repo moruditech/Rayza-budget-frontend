@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LINE_ITEM_TYPES } from '@budget-app/shared';
 import ProgressRing from '../../ui/ProgressRing/ProgressRing';
 import MarkUsedModal from '../../../features/lineItems/components/MarkUsedModal';
+import ConfirmDialog from '../../ui/ConfirmDialog/ConfirmDialog';
 import AddMoneyModal from '../../../features/lineItems/components/AddMoneyModal';
 import WithdrawModal from '../../../features/lineItems/components/WithdrawModal';
 import TransferModal from '../../../features/lineItems/components/TransferModal';
@@ -34,6 +35,7 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const [showWithdraw,  setShowWithdraw]  = useState(false);
   const [showTransfer,  setShowTransfer]  = useState(false);
   const [showHistory,   setShowHistory]   = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const deleteMutation = useDeleteLineItem(monthId, pot._id);
   const isSinking      = lineItem.type === LINE_ITEM_TYPES.SINKING_FUND;
@@ -176,7 +178,7 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
               </button>
               <button
                 className={[styles.rowBtn, styles.rowBtnDanger].join(' ')}
-                onClick={() => deleteMutation.mutate(lineItem._id)}
+                onClick={() => setConfirmDelete(true)}
                 disabled={deleteMutation.isPending}
                 type="button"
                 aria-label={`Delete ${lineItem.name}`}
@@ -196,6 +198,28 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
           monthId={monthId}
           onClose={() => setShowMarkUsed(false)}
         />
+      )}
+
+      {confirmDelete && (
+        <ConfirmDialog
+          title={`Delete ${lineItem.name}?`}
+          loading={deleteMutation.isPending}
+          error={
+            deleteMutation.isError ? 'Could not delete this item. Please try again.' : null
+          }
+          warning={
+            isSinking && balance > 0
+              ? `This fund holds ${formatCurrency(balance)}. That money will no longer be tracked.`
+              : null
+          }
+          onConfirm={() =>
+            deleteMutation.mutate(lineItem._id, { onSuccess: () => setConfirmDelete(false) })
+          }
+          onClose={() => setConfirmDelete(false)}
+        >
+          <strong>{lineItem.name}</strong> and its spending history will be permanently
+          removed from this pot. This cannot be undone.
+        </ConfirmDialog>
       )}
 
       {showAddMoney && (

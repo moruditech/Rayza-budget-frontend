@@ -4,6 +4,7 @@ import LineItemRow from '../LineItemRow/LineItemRow';
 import LineItemForm from '../../../features/lineItems/components/LineItemForm';
 import PotForm from '../../../features/pots/components/PotForm';
 import Modal from '../../ui/Modal/Modal';
+import ConfirmDialog from '../../ui/ConfirmDialog/ConfirmDialog';
 import { useDeletePot } from '../../../features/pots/hooks/usePots';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import { calcPercentage } from '../../../utils/calcPercentage';
@@ -49,6 +50,8 @@ export default function PotCard({ pot, monthId, isLocked }) {
   const [showLineItem,   setShowLineItem]   = useState(false);
   const [showEditPot,    setShowEditPot]    = useState(false);
   const [confirmDelete,  setConfirmDelete]  = useState(false);
+  // Set when the API says the pot has spending history — needs a stronger warning.
+  const [hasHistory,     setHasHistory]     = useState(false);
 
   const deleteMutation = useDeletePot(monthId);
 
@@ -60,22 +63,27 @@ export default function PotCard({ pot, monthId, isLocked }) {
   const pct       = calcPercentage(used, budget);
   const color  = TYPE_COLOR[pot.type] ?? '--primary';
 
-  // First attempt — no force. If the API returns POT_HAS_HISTORY, we
-  // surface a confirmation inside the card before trying again with force.
-  const handleDelete = () => {
+  // Step 1 — the Delete button only opens the confirmation dialog.
+  // Step 2 — confirming tries a normal delete; if the API reports
+  // POT_HAS_HISTORY the dialog turns into a stronger warning and the next
+  // confirm forces the delete.
+  const closeConfirm = () => {
+    setConfirmDelete(false);
+    setHasHistory(false);
+    deleteMutation.reset();
+  };
+
+  const handleConfirmDelete = () => {
     deleteMutation.mutate(
-      { id: pot._id, force: false },
+      { id: pot._id, force: hasHistory },
       {
+        onSuccess: closeConfirm,
         onError: (err) => {
           const code = err.response?.data?.error?.code;
-          if (code === 'POT_HAS_HISTORY') setConfirmDelete(true);
+          if (code === 'POT_HAS_HISTORY') setHasHistory(true);
         },
       }
     );
-  };
-
-  const handleForceDelete = () => {
-    deleteMutation.mutate({ id: pot._id, force: true });
   };
 
   return (
@@ -182,36 +190,14 @@ export default function PotCard({ pot, monthId, isLocked }) {
                     Edit
                   </button>
 
-                  {confirmDelete ? (
-                    <span className={styles.deleteConfirm}>
-                      Has history.{' '}
-                      <button
-                        className={[styles.potActionBtn, styles.danger].join(' ')}
-                        onClick={handleForceDelete}
-                        disabled={deleteMutation.isPending}
-                        type="button"
-                      >
-                        Delete anyway
-                      </button>
-                      {' '}
-                      <button
-                        className={styles.potActionBtn}
-                        onClick={() => setConfirmDelete(false)}
-                        type="button"
-                      >
-                        Cancel
-                      </button>
-                    </span>
-                  ) : (
-                    <button
-                      className={[styles.potActionBtn, styles.danger].join(' ')}
-                      onClick={(e) => { e.stopPropagation(); handleDelete(); }}
-                      disabled={deleteMutation.isPending}
-                      type="button"
-                    >
-                      Delete
-                    </button>
-                  )}
+                  <button
+                    className={[styles.potActionBtn, styles.danger].join(' ')}
+                    onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
+                    disabled={deleteMutation.isPending}
+                    type="button"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             )}
@@ -220,6 +206,29 @@ export default function PotCard({ pot, monthId, isLocked }) {
       </div>
 
       {/* ── Modals — rendered outside pot-row so z-index stacks cleanly ── */}
+      {confirmDelete && (
+        <ConfirmDialog
+          title={`Delete ${pot.name}?`}
+          confirmLabel={hasHistory ? 'Delete anyway' : 'Delete'}
+          loading={deleteMutation.isPending}
+          error={
+            deleteMutation.isError && !hasHistory
+              ? 'Could not delete this pot. Please try again.'
+              : null
+          }
+          warning={
+            hasHistory
+              ? 'This pot has spending history. Deleting it removes that history for good.'
+              : null
+          }
+          onConfirm={handleConfirmDelete}
+          onClose={closeConfirm}
+        >
+          <strong>{pot.name}</strong> and all of its line items will be permanently
+          removed from this month. This cannot be undone.
+        </ConfirmDialog>
+      )}
+
       {showLineItem && (
         <Modal title="Add line item" onClose={() => setShowLineItem(false)}>
           <LineItemForm

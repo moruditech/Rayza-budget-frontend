@@ -1,0 +1,20 @@
+.body {
+  display: grid;
+  gap: 12px;
+}
+
+.text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.text strong {
+  font-weight: 600;
+}
+
+/* Destructive confirm button — overrides the primary green */
+.danger {
+  background: var(--warning);
+  color: #fff;
+}
