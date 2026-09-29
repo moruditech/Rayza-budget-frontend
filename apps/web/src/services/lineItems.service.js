@@ -50,6 +50,16 @@ async function withdraw(monthId, potId, id, payload) {
   return data.data;
 }
 
+// Invest part of the pot's remaining budget into a sinking fund (one-off,
+// not repeated next month). payload: { amount, note? }
+async function deposit(monthId, potId, id, payload) {
+  const { data } = await api.post(
+    `/months/${monthId}/pots/${potId}/line-items/${id}/deposit`,
+    payload
+  );
+  return data.data;
+}
+
 // Move money from one sinking fund to another within the same month.
 // payload: { fromLineItemId, toLineItemId, amount, note? }
 async function transfer(monthId, payload) {
@@ -63,6 +73,7 @@ const lineItemsService = {
   deleteLineItem,
   markUsed,
   withdraw,
+  deposit,
   transfer,
 };
 export default lineItemsService;

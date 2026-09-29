@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { LINE_ITEM_TYPES } from '@budget-app/shared';
 import ProgressRing from '../../ui/ProgressRing/ProgressRing';
 import MarkUsedModal from '../../../features/lineItems/components/MarkUsedModal';
+import AddMoneyModal from '../../../features/lineItems/components/AddMoneyModal';
 import WithdrawModal from '../../../features/lineItems/components/WithdrawModal';
 import TransferModal from '../../../features/lineItems/components/TransferModal';
 import LineItemForm from '../../../features/lineItems/components/LineItemForm';
@@ -29,6 +30,7 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const [showMarkUsed,  setShowMarkUsed]  = useState(false);
   const [showEditForm,  setShowEditForm]  = useState(false);
   const [showLogSpend,  setShowLogSpend]  = useState(false);
+  const [showAddMoney,  setShowAddMoney]  = useState(false);
   const [showWithdraw,  setShowWithdraw]  = useState(false);
   const [showTransfer,  setShowTransfer]  = useState(false);
   const [showHistory,   setShowHistory]   = useState(false);
@@ -96,6 +98,14 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
               )}
               <button
                 className={styles.chipFund}
+                onClick={() => setShowAddMoney(true)}
+                disabled={(pot.remaining ?? 0) <= 0}
+                type="button"
+              >
+                Add money
+              </button>
+              <button
+                className={styles.chipFund}
                 onClick={() => setShowWithdraw(true)}
                 disabled={balance <= 0}
                 type="button"
@@ -128,7 +138,7 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
                 <ul className={styles.history}>
                   {activity.map((entry) => (
                     <li key={entry._id} className={styles.historyItem}>
-                      <span className={entry.type === 'TRANSFER_IN' ? styles.historyIn : styles.historyOut}>
+                      <span className={(entry.type === 'TRANSFER_IN' || entry.type === 'SINKING_FUND_DEPOSIT') ? styles.historyIn : styles.historyOut}>
                         {describeFundEntry(entry)}
                       </span>
                       <span className={styles.historyDate}>{shortDate(entry.date)}</span>
@@ -185,6 +195,15 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
           potId={pot._id}
           monthId={monthId}
           onClose={() => setShowMarkUsed(false)}
+        />
+      )}
+
+      {showAddMoney && (
+        <AddMoneyModal
+          lineItem={lineItem}
+          pot={pot}
+          monthId={monthId}
+          onClose={() => setShowAddMoney(false)}
         />
       )}
 

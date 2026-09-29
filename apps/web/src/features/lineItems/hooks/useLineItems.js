@@ -64,6 +64,16 @@ export function useWithdraw(monthId, potId) {
   });
 }
 
+// Invest what is left in the pot into an existing sinking fund.
+export function useDeposit(monthId, potId) {
+  const invalidate = useInvalidate(monthId);
+  return useMutation({
+    mutationFn: ({ id, ...payload }) =>
+      lineItemsService.deposit(monthId, potId, id, payload),
+    onSuccess: invalidate,
+  });
+}
+
 // Move money between two sinking funds — one goes down, the other goes up.
 export function useTransfer(monthId) {
   const invalidate = useInvalidate(monthId);

@@ -27,6 +27,7 @@ const PM_LABEL = {
 // can't be edited as transactions.
 const TYPE_LABEL = {
   SINKING_FUND_USED: 'Withdrawal',
+  SINKING_FUND_DEPOSIT: 'Added to fund',
   TRANSFER_OUT:      'Transfer out',
   TRANSFER_IN:       'Transfer in',
 };
@@ -41,7 +42,7 @@ function TxnRow({ entry, monthId, isLocked }) {
   const deleteMutation = useDeleteTransaction(monthId, potId, lineItemId);
   const iconColor = `var(${TYPE_COLOR[entry.pot?.type] ?? '--primary'})`;
   const isSpend   = !entry.type || entry.type === 'INSTANT_SPEND';
-  const isIncoming = entry.type === 'TRANSFER_IN';
+  const isIncoming = entry.type === 'TRANSFER_IN' || entry.type === 'SINKING_FUND_DEPOSIT';
 
   return (
     <>
