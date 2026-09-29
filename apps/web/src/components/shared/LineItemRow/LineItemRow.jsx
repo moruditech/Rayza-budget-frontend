@@ -3,6 +3,7 @@ import { LINE_ITEM_TYPES } from '@budget-app/shared';
 import ProgressRing from '../../ui/ProgressRing/ProgressRing';
 import MarkUsedModal from '../../../features/lineItems/components/MarkUsedModal';
 import ConfirmDialog from '../../ui/ConfirmDialog/ConfirmDialog';
+import RecordInterestModal from '../../../features/lineItems/components/RecordInterestModal';
 import AddMoneyModal from '../../../features/lineItems/components/AddMoneyModal';
 import WithdrawModal from '../../../features/lineItems/components/WithdrawModal';
 import TransferModal from '../../../features/lineItems/components/TransferModal';
@@ -32,6 +33,7 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const [showEditForm,  setShowEditForm]  = useState(false);
   const [showLogSpend,  setShowLogSpend]  = useState(false);
   const [showAddMoney,  setShowAddMoney]  = useState(false);
+  const [showInterest,  setShowInterest]  = useState(false);
   const [showWithdraw,  setShowWithdraw]  = useState(false);
   const [showTransfer,  setShowTransfer]  = useState(false);
   const [showHistory,   setShowHistory]   = useState(false);
@@ -43,6 +45,8 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const balance        = lineItem.accumulatedBalance ?? 0;
   const projection     = lineItem.projection;
   const activity       = lineItem.activity ?? [];
+  const progressCheck  = lineItem.progressCheck;
+  const earnsInterest  = lineItem.annualInterestRate != null;
 
   return (
     <>
@@ -86,6 +90,31 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
             </span>
           )}
 
+          {/* Real interest the bank has paid so far */}
+          {isSinking && earnsInterest && (lineItem.interestEarned ?? 0) > 0 && (
+            <span className={styles.interestEarned}>
+              Interest earned so far {formatCurrency(lineItem.interestEarned)}
+            </span>
+          )}
+
+          {/* "Am I on track?" — needs a target amount and a goal date */}
+          {isSinking && progressCheck && (
+            <span
+              className={[
+                styles.goalLine,
+                progressCheck.status === 'BEHIND' ? styles.goalBehind : styles.goalOk,
+              ].join(' ')}
+            >
+              {progressCheck.status === 'REACHED' && 'Target reached'}
+              {progressCheck.status === 'ON_TRACK' &&
+                `On track: ${formatCurrency(progressCheck.currentMonthly)}/month covers the ${formatCurrency(progressCheck.requiredMonthly)}/month needed by ${formatTargetDate(progressCheck.goalDate)}`}
+              {progressCheck.status === 'BEHIND' &&
+                (progressCheck.months === 0
+                  ? `Goal date reached: ${formatCurrency(progressCheck.requiredMonthly)} still needed`
+                  : `Behind: needs ${formatCurrency(progressCheck.requiredMonthly)}/month by ${formatTargetDate(progressCheck.goalDate)}, you put in ${formatCurrency(progressCheck.currentMonthly)}`)}
+            </span>
+          )}
+
           {/* Withdraw / move — allowed at any time, before or after the target */}
           {isSinking && !isLocked && (
             <div className={styles.fundChips}>
@@ -96,6 +125,15 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
                   type="button"
                 >
                   Mark as used
+                </button>
+              )}
+              {earnsInterest && (
+                <button
+                  className={styles.chipFund}
+                  onClick={() => setShowInterest(true)}
+                  type="button"
+                >
+                  Record interest
                 </button>
               )}
               <button
@@ -140,7 +178,7 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
                 <ul className={styles.history}>
                   {activity.map((entry) => (
                     <li key={entry._id} className={styles.historyItem}>
-                      <span className={(entry.type === 'TRANSFER_IN' || entry.type === 'SINKING_FUND_DEPOSIT') ? styles.historyIn : styles.historyOut}>
+                      <span className={(entry.type === 'TRANSFER_IN' || entry.type === 'SINKING_FUND_DEPOSIT' || entry.type === 'SINKING_FUND_INTEREST') ? styles.historyIn : styles.historyOut}>
                         {describeFundEntry(entry)}
                       </span>
                       <span className={styles.historyDate}>{shortDate(entry.date)}</span>
@@ -220,6 +258,15 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
           <strong>{lineItem.name}</strong> and its spending history will be permanently
           removed from this pot. This cannot be undone.
         </ConfirmDialog>
+      )}
+
+      {showInterest && (
+        <RecordInterestModal
+          lineItem={lineItem}
+          potId={pot._id}
+          monthId={monthId}
+          onClose={() => setShowInterest(false)}
+        />
       )}
 
       {showAddMoney && (

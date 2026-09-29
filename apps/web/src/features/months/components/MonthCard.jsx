@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCloneMonth } from '../hooks/useMonthMutations';
 import LockMonthModal from './LockMonthModal';
 import DeleteMonthModal from './DeleteMonthModal';
+import ExportMonthModal from './ExportMonthModal';
 import { monthLabel } from '../../../utils/formatDate';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import styles from './MonthCard.module.css';
@@ -24,6 +25,7 @@ function TrashIcon() {
 export default function MonthCard({ month, isActive, readyToLock = false, onSelect }) {
   const [showLock,    setShowLock]    = useState(false);
   const [showDelete,  setShowDelete]  = useState(false);
+  const [showExport,  setShowExport]  = useState(false);
   const [cloneError,  setCloneError]  = useState(null);
 
   const cloneMutation = useCloneMonth();
@@ -125,6 +127,14 @@ export default function MonthCard({ month, isActive, readyToLock = false, onSele
           )}
 
           <button
+            className={styles.actionBtn}
+            onClick={() => setShowExport(true)}
+            type="button"
+          >
+            Export
+          </button>
+
+          <button
             className={styles.deleteBtn}
             onClick={() => setShowDelete(true)}
             type="button"
@@ -141,6 +151,10 @@ export default function MonthCard({ month, isActive, readyToLock = false, onSele
           monthId={month._id}
           onClose={() => setShowLock(false)}
         />
+      )}
+
+      {showExport && (
+        <ExportMonthModal month={month} onClose={() => setShowExport(false)} />
       )}
 
       {showDelete && (

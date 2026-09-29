@@ -1,0 +1,45 @@
+.body {
+  display: grid;
+  gap: 12px;
+}
+
+.text {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.option {
+  all: unset;
+  box-sizing: border-box;
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.option:hover:not(:disabled),
+.option:focus-visible {
+  border-color: var(--primary);
+}
+
+.option:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.optionTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.optionHint {
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}

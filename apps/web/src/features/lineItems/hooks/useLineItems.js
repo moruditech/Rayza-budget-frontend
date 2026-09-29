@@ -64,6 +64,16 @@ export function useWithdraw(monthId, potId) {
   });
 }
 
+// Log interest the bank actually paid into a fund.
+export function useRecordInterest(monthId, potId) {
+  const invalidate = useInvalidate(monthId);
+  return useMutation({
+    mutationFn: ({ id, ...payload }) =>
+      lineItemsService.recordInterest(monthId, potId, id, payload),
+    onSuccess: invalidate,
+  });
+}
+
 // Invest what is left in the pot into an existing sinking fund.
 export function useDeposit(monthId, potId) {
   const invalidate = useInvalidate(monthId);

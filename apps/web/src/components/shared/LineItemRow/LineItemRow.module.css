@@ -211,3 +211,18 @@
   font-size: 0.68rem;
   color: var(--ink-muted);
 }
+
+/* Interest actually paid by the bank */
+.interestEarned {
+  font-size: 0.73rem;
+  color: var(--ink-muted);
+}
+
+/* "Am I on track?" line */
+.goalLine {
+  font-size: 0.73rem;
+  line-height: 1.35;
+}
+
+.goalOk     { color: var(--primary); }
+.goalBehind { color: var(--warning); }

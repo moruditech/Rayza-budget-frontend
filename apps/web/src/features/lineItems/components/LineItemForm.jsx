@@ -49,7 +49,7 @@ const schema = z
           ctx.addIssue({
             code: 'custom',
             path: ['targetDate'],
-            message: 'Pick the date to project to',
+            message: 'Pick the goal date to project to',
           });
         }
       }
@@ -123,8 +123,11 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
       delete payload.targetDate;
     } else if (!interestOn) {
       // null clears any previously saved rate when editing a fund.
+      // The goal date stays: it also drives the "on track?" check.
       payload.annualInterestRate = null;
-      payload.targetDate = null;
+    }
+    if (payload.type !== LINE_ITEM_TYPES.INSTANT_SPEND) {
+      payload.targetDate = payload.targetDate || null;
     }
 
     if (isEditing) {
@@ -191,6 +194,18 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
             used in the pot. It is also added again every month.
           </p>
 
+          <Input
+            id="goal-date"
+            label={earnsInterest ? 'Goal date (projection runs to here)' : 'Goal date (optional)'}
+            type="date"
+            error={errors.targetDate?.message}
+            {...register('targetDate', { setValueAs: (v) => (v ? v : null) })}
+          />
+          <p className={styles.hint}>
+            With a goal date the app tells you how much you need to put in each
+            month to reach the target, and whether you are on track.
+          </p>
+
           <label className={styles.checkRow}>
             <input type="checkbox" {...register('earnsInterest')} />
             <span>This fund earns interest</span>
@@ -209,13 +224,6 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
                 {...register('annualInterestRate', {
                   setValueAs: (v) => (v === '' || v == null ? null : Number(v)),
                 })}
-              />
-              <Input
-                id="projection-date"
-                label="Project future value up to"
-                type="date"
-                error={errors.targetDate?.message}
-                {...register('targetDate', { setValueAs: (v) => (v ? v : null) })}
               />
             </>
           )}

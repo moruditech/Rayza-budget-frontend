@@ -20,6 +20,11 @@ export function describeFundEntry(entry) {
       return `Received ${amount} from ${whereText(entry.counterparty)}`;
     case 'TRANSFER_OUT':
       return `Moved ${amount} to ${whereText(entry.counterparty)}`;
+    case 'SINKING_FUND_INTEREST': {
+      const expected =
+        entry.expectedAmount != null ? ` (rate predicted ${formatCurrency(entry.expectedAmount)})` : '';
+      return `Interest ${amount} paid${expected}${entry.note ? ` — ${entry.note}` : ''}`;
+    }
     case 'SINKING_FUND_DEPOSIT':
       return entry.note
         ? `Added ${amount} from the pot budget — ${entry.note}`

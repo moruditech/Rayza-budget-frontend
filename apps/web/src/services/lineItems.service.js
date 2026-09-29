@@ -50,6 +50,16 @@ async function withdraw(monthId, potId, id, payload) {
   return data.data;
 }
 
+// Log interest the bank actually paid into an interest-bearing fund.
+// payload: { amount, note?, date? }
+async function recordInterest(monthId, potId, id, payload) {
+  const { data } = await api.post(
+    `/months/${monthId}/pots/${potId}/line-items/${id}/interest`,
+    payload
+  );
+  return data.data;
+}
+
 // Invest part of the pot's remaining budget into a sinking fund (one-off,
 // not repeated next month). payload: { amount, note? }
 async function deposit(monthId, potId, id, payload) {
@@ -74,6 +84,7 @@ const lineItemsService = {
   markUsed,
   withdraw,
   deposit,
+  recordInterest,
   transfer,
 };
 export default lineItemsService;

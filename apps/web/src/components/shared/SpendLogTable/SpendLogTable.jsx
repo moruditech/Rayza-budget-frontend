@@ -29,6 +29,7 @@ const PM_LABEL = {
 const TYPE_LABEL = {
   SINKING_FUND_USED: 'Withdrawal',
   SINKING_FUND_DEPOSIT: 'Added to fund',
+  SINKING_FUND_INTEREST: 'Interest',
   TRANSFER_OUT:      'Transfer out',
   TRANSFER_IN:       'Transfer in',
 };
@@ -44,7 +45,7 @@ function TxnRow({ entry, monthId, isLocked }) {
   const deleteMutation = useDeleteTransaction(monthId, potId, lineItemId);
   const iconColor = `var(${TYPE_COLOR[entry.pot?.type] ?? '--primary'})`;
   const isSpend   = !entry.type || entry.type === 'INSTANT_SPEND';
-  const isIncoming = entry.type === 'TRANSFER_IN' || entry.type === 'SINKING_FUND_DEPOSIT';
+  const isIncoming = entry.type === 'TRANSFER_IN' || entry.type === 'SINKING_FUND_DEPOSIT' || entry.type === 'SINKING_FUND_INTEREST';
 
   return (
     <>
