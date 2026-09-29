@@ -106,44 +106,55 @@
 /* ── Main content ── */
 .main {
   flex: 1;
-  padding: 14px 20px 100px;
+  padding: 14px 20px calc(88px + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
 }
 
-/* ── Bottom tabbar ── */
+/* ── Bottom tabbar ──
+   Full-bleed: the bar itself spans the whole screen edge to edge and stays
+   pinned to the bottom; only the tabs inside are limited to the content width. */
 .tabbar {
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   bottom: 0;
-  display: flex;
-  border-top: 1px solid var(--border);
+  width: 100%;
   background: var(--surface);
-  padding: 8px 4px calc(8px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   z-index: 10;
 }
 
+.tabbarInner {
+  display: flex;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
 .tab {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  padding: 6px 2px;
+  padding: 10px 2px 9px;
   color: var(--ink-muted);
   font-size: 0.66rem;
   font-weight: 500;
   cursor: pointer;
-  border-radius: 10px;
   text-decoration: none;
   transition: color 0.15s ease;
 }
 
 .tab:focus-visible {
   outline: 2px solid var(--primary);
+  outline-offset: -2px;
 }
 
 .tabIcon {
-  width: 19px;
-  height: 19px;
+  width: 21px;
+  height: 21px;
   stroke: currentColor;
   fill: none;
   stroke-width: 1.8;
@@ -153,4 +164,17 @@
 
 .tabActive {
   color: var(--primary);
+  font-weight: 600;
+}
+
+/* Active tab indicator along the top edge of the bar */
+.tabActive::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 22%;
+  right: 22%;
+  height: 2px;
+  border-radius: 0 0 3px 3px;
+  background: var(--primary);
 }

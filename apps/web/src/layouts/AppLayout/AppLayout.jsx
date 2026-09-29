@@ -122,21 +122,23 @@ export default function AppLayout() {
 
       {/* ── Bottom tabbar ── */}
       <nav className={styles.tabbar} aria-label="Main navigation">
-        {TABS.map(({ to, label: tabLabel, icon, end }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end={end}
-            className={({ isActive }) =>
-              [styles.tab, isActive ? styles.tabActive : '']
-                .filter(Boolean)
-                .join(' ')
-            }
-          >
-            {icon}
-            <span>{tabLabel}</span>
-          </NavLink>
-        ))}
+        <div className={styles.tabbarInner}>
+          {TABS.map(({ to, label: tabLabel, icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              className={({ isActive }) =>
+                [styles.tab, isActive ? styles.tabActive : '']
+                  .filter(Boolean)
+                  .join(' ')
+              }
+            >
+              {icon}
+              <span>{tabLabel}</span>
+            </NavLink>
+          ))}
+        </div>
       </nav>
     </div>
   );

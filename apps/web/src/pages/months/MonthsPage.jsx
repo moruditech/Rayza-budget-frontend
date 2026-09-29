@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMonths } from '../../features/months/hooks/useMonths';
+import { useAlerts } from '../../features/alerts/hooks/useAlerts';
 import { useCreateMonth } from '../../features/months/hooks/useMonthMutations';
 import { useMonthStore } from '../../store/monthStore';
 import MonthCard from '../../features/months/components/MonthCard';
@@ -96,10 +97,21 @@ function Skeleton() {
 export default function MonthsPage() {
   const { data: months = [], isLoading } = useMonths();
   const { activeMonthId, setActiveMonth } = useMonthStore();
+  const { data: alerts = [] } = useAlerts();
   const [showCreate, setShowCreate] = useState(false);
+
+  // Months the backend says are ready to lock (last days of the month or over).
+  const readyToLock = new Set(
+    alerts.filter((a) => a.type === 'MONTH_READY_TO_LOCK').map((a) => a.meta?.monthId)
+  );
 
   return (
     <>
+      <div className={styles.pageHead}>
+        <h2 className={styles.pageTitle}>Months</h2>
+        <p className={styles.pageHint}>Tap a month to view it. Lock a month once it is done.</p>
+      </div>
+
       {/* Month cards — newest first (API already returns them that way) */}
       {isLoading ? (
         <Skeleton />
@@ -115,6 +127,7 @@ export default function MonthsPage() {
               key={month._id}
               month={month}
               isActive={month._id === activeMonthId}
+              readyToLock={readyToLock.has(month._id)}
               onSelect={() => setActiveMonth(month._id)}
             />
           ))}

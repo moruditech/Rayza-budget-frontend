@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import monthsService from '../../../services/months.service';
+import { useMonthStore } from '../../../store/monthStore';
 
 // FR-08 — create a new empty month.
 export function useCreateMonth() {
@@ -41,6 +42,29 @@ export function useLockMonth() {
       queryClient.invalidateQueries({ queryKey: ['months'] });
       queryClient.invalidateQueries({ queryKey: ['month', id] });
       queryClient.invalidateQueries({ queryKey: ['reports'] });
+    },
+  });
+}
+
+// Delete a month and everything in it. The deleted month is dropped from the
+// cached list straight away, and if it was the selected month the selection is
+// cleared so AppLayout picks the current (or newest) remaining month.
+export function useDeleteMonth() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id) => monthsService.deleteMonth(id),
+    onSuccess: (_data, id) => {
+      queryClient.setQueryData(['months'], (old) =>
+        Array.isArray(old) ? old.filter((m) => m._id !== id) : old
+      );
+      queryClient.removeQueries({ queryKey: ['month', id] });
+      queryClient.invalidateQueries({ queryKey: ['months'] });
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+      queryClient.invalidateQueries({ queryKey: ['alerts'] });
+      queryClient.invalidateQueries({ queryKey: ['spendLog'] });
+
+      const { activeMonthId, setActiveMonth } = useMonthStore.getState();
+      if (activeMonthId === id) setActiveMonth(null);
     },
   });
 }

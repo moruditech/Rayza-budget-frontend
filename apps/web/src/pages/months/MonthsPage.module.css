@@ -61,3 +61,21 @@
   background: var(--border);
   animation: pulse 1.4s ease-in-out infinite;
 }
+
+/* ── Page heading ── */
+.pageHead {
+  margin-bottom: 14px;
+}
+
+.pageTitle {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--ink);
+}
+
+.pageHint {
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}

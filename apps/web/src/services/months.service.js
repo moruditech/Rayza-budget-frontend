@@ -37,6 +37,12 @@ async function rollover(id, decisions) {
   return data.data;
 }
 
+// Permanently delete a month and everything in it (locked or not).
+async function deleteMonth(id) {
+  const { data } = await api.delete(`/months/${id}`);
+  return data.data;
+}
+
 const monthsService = {
   listMonths,
   getMonth,
@@ -44,5 +50,6 @@ const monthsService = {
   cloneMonth,
   lockMonth,
   rollover,
+  deleteMonth,
 };
 export default monthsService;
