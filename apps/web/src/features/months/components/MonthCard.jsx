@@ -47,6 +47,7 @@ export default function MonthCard({ month, isActive, readyToLock = false, onSele
   };
 
   const label = monthLabel(month.year, month.month);
+  const next  = nextMonth(month.year, month.month);
 
   return (
     <>
@@ -101,24 +102,26 @@ export default function MonthCard({ month, isActive, readyToLock = false, onSele
           onClick={(e) => e.stopPropagation()}
           onKeyDown={(e) => e.stopPropagation()}
         >
+          {/* Clone works on locked months too — that's the normal flow:
+              lock the finished month, then clone it into the next one. */}
+          <button
+            className={styles.actionBtn}
+            onClick={handleClone}
+            disabled={cloneMutation.isPending}
+            type="button"
+          >
+            {cloneMutation.isPending
+              ? 'Cloning…'
+              : `Clone to ${monthLabel(next.year, next.month)}`}
+          </button>
           {!month.isLocked && (
-            <>
-              <button
-                className={styles.actionBtn}
-                onClick={handleClone}
-                disabled={cloneMutation.isPending}
-                type="button"
-              >
-                {cloneMutation.isPending ? 'Cloning…' : 'Clone'}
-              </button>
-              <button
-                className={[styles.actionBtn, styles.actionBtnLock].join(' ')}
-                onClick={() => setShowLock(true)}
-                type="button"
-              >
-                Lock
-              </button>
-            </>
+            <button
+              className={[styles.actionBtn, styles.actionBtnLock].join(' ')}
+              onClick={() => setShowLock(true)}
+              type="button"
+            >
+              Lock
+            </button>
           )}
 
           <button
