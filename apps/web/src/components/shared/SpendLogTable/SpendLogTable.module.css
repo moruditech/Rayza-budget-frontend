@@ -102,6 +102,7 @@
 
 .txnBtn {
   all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   font-size: 0.7rem;
   color: var(--ink-muted);

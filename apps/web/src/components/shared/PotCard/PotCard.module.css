@@ -123,6 +123,7 @@
 
 .btnAddLineItem {
   all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   font-size: 0.82rem;
   font-weight: 600;
@@ -142,6 +143,7 @@
 
 .potActionBtn {
   all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   font-size: 0.75rem;
   color: var(--ink-muted);

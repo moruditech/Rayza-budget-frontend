@@ -1,5 +1,6 @@
 .btn {
   all: unset;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,6 +8,7 @@
   font-family: inherit;
   font-weight: 600;
   border-radius: 10px;
+  max-width: 100%;
   cursor: pointer;
   transition: opacity 0.15s ease, background 0.15s ease;
   position: relative;

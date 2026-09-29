@@ -19,6 +19,7 @@
 
 .btnLogout {
   all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   display: inline-block;
   font-size: 0.85rem;

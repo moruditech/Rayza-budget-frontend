@@ -85,6 +85,7 @@
 /* Remove button — appears on row hover, invisible by default */
 .removeBtn {
   all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   color: var(--ink-muted);
   font-size: 0.75rem;

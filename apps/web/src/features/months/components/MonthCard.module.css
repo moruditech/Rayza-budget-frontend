@@ -133,6 +133,7 @@
 
 .actionBtn {
   all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   font-size: 0.78rem;
   font-weight: 600;
@@ -168,6 +169,7 @@
 /* Delete pushed to the far right, quiet until hovered */
 .deleteBtn {
   all: unset;
+  box-sizing: border-box;
   cursor: pointer;
   margin-left: auto;
   display: inline-flex;
