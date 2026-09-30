@@ -1,0 +1,12 @@
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Destructive confirm button — overrides the primary green */
+.danger {
+  background: var(--warning);
+  color: #fff;
+}

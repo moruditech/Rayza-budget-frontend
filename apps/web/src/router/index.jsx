@@ -4,6 +4,11 @@ import AuthLayout   from '../layouts/AuthLayout/AuthLayout';
 import AppLayout    from '../layouts/AppLayout/AppLayout';
 import LoginPage    from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
+import ForgotPasswordPage from '../pages/auth/ForgotPasswordPage';
+import ResetPasswordPage  from '../pages/auth/ResetPasswordPage';
+import TermsPage   from '../pages/legal/TermsPage';
+import PrivacyPage from '../pages/legal/PrivacyPage';
+import CookiePage  from '../pages/legal/CookiePage';
 import DashboardPage from '../pages/dashboard/DashboardPage';
 import PotsPage     from '../pages/pots/PotsPage';
 import SpendLogPage from '../pages/spendLog/SpendLogPage';
@@ -43,6 +48,18 @@ export const router = createBrowserRouter([
       },
     ],
   },
+  // Open to everyone, signed in or not: the password-reset screens (a link
+  // from an email) and the legal documents (linked from sign-up and Settings).
+  {
+    element: <AuthLayout />,
+    children: [
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
+      { path: '/reset-password',  element: <ResetPasswordPage />  },
+    ],
+  },
+  { path: '/terms',   element: <TermsPage />   },
+  { path: '/privacy', element: <PrivacyPage /> },
+  { path: '/cookies', element: <CookiePage />  },
   {
     element: <AuthGuard />,
     children: [

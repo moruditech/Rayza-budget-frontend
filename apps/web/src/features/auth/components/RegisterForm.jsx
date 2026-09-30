@@ -7,6 +7,7 @@ import { useRegisterMutation } from '../hooks/useAuth';
 import Input from '../../../components/ui/Input/Input';
 import Button from '../../../components/ui/Button/Button';
 import Alert from '../../../components/ui/Alert/Alert';
+import LegalLinks from '../../legal/LegalLinks';
 import styles from './AuthForm.module.css';
 
 const schema = z.object({
@@ -16,6 +17,11 @@ const schema = z.object({
     .string()
     .min(8, 'Password must be at least 8 characters')
     .max(72, 'Password is too long'),
+  // Must be ticked: accepts the Terms of Use, Privacy Policy and Cookie
+  // Policy and confirms the person is 18 or older.
+  acceptTerms: z.boolean().refine((v) => v === true, {
+    message: 'Tick this to create an account',
+  }),
 });
 
 export default function RegisterForm() {
@@ -24,7 +30,7 @@ export default function RegisterForm() {
     handleSubmit,
     formState: { errors },
     setError,
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({ resolver: zodResolver(schema), defaultValues: { acceptTerms: false } });
 
   const mutation = useRegisterMutation();
 
@@ -70,6 +76,15 @@ export default function RegisterForm() {
         error={errors.password?.message}
         {...register('password')}
       />
+
+      <div>
+        <label className={styles.consent}>
+          <input type="checkbox" {...register('acceptTerms')} />
+          <span>I am 18 or older and accept the terms below</span>
+        </label>
+        {errors.acceptTerms && <p className={styles.consentError}>{errors.acceptTerms.message}</p>}
+        <LegalLinks newTab />
+      </div>
 
       <Button type="submit" loading={mutation.isPending}>
         Create account

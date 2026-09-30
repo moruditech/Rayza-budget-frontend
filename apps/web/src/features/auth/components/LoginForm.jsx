@@ -17,6 +17,7 @@ const schema = z.object({
 export default function LoginForm() {
   const location = useLocation();
   const justRegistered = location.state?.registered === true;
+  const passwordWasReset = location.state?.passwordReset === true;
 
   const {
     register,
@@ -46,6 +47,10 @@ export default function LoginForm() {
         <Alert variant="ready">Account created — log in to get started.</Alert>
       )}
 
+      {passwordWasReset && (
+        <Alert variant="ready">Password updated. Log in with your new password.</Alert>
+      )}
+
       {errors.root && (
         <Alert variant="warn">{errors.root.message}</Alert>
       )}
@@ -71,6 +76,10 @@ export default function LoginForm() {
       <Button type="submit" loading={mutation.isPending}>
         Log in
       </Button>
+
+      <p className={styles.switchLink}>
+        <Link to="/forgot-password">Forgot password?</Link>
+      </p>
 
       <p className={styles.switchLink}>
         No account?{' '}

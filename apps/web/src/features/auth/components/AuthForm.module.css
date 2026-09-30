@@ -19,3 +19,28 @@
 .switchLink a:hover {
   text-decoration: underline;
 }
+
+/* Sign-up / consent checkbox */
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.consent input {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.consentError {
+  margin: 0 0 6px 28px;
+  font-size: 0.78rem;
+  color: var(--warning);
+}

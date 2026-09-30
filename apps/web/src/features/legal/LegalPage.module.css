@@ -1,0 +1,136 @@
+.shell {
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  padding-top: calc(16px + env(safe-area-inset-top, 0px));
+}
+
+.back {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--primary);
+}
+
+.brand {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8px 20px 32px;
+  font-size: 0.94rem;
+  line-height: 1.65;
+}
+
+.h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.7rem;
+  line-height: 1.2;
+}
+
+.meta {
+  margin: 6px 0 24px;
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+
+.section {
+  margin-bottom: 26px;
+}
+
+.h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.main p {
+  margin-bottom: 10px;
+}
+
+.main ul {
+  margin: 0 0 10px;
+  padding-left: 20px;
+  display: grid;
+  gap: 4px;
+}
+
+.main a {
+  color: var(--primary);
+}
+
+/* Scrolls sideways on a narrow phone instead of breaking the page */
+.tableWrap {
+  overflow-x: auto;
+  margin-bottom: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.table th,
+.table td {
+  padding: 8px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+
+.table th {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+
+/* Details still to be filled in legalConfig.js */
+.placeholder {
+  background: #ffe066;
+  color: #3a2f00;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 10px;
+  font-size: 0.78rem;
+  color: var(--ink-muted);
+}
+
+.links a {
+  color: var(--ink-muted);
+  text-decoration: underline;
+}
+
+.links a:hover {
+  color: var(--primary);
+}

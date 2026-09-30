@@ -3,6 +3,7 @@ import { Outlet, NavLink, Link } from 'react-router-dom';
 import { useMonths } from '../../features/months/hooks/useMonths';
 import { useMonthStore } from '../../store/monthStore';
 import { monthLabel } from '../../utils/formatDate';
+import ConsentGate from '../../features/legal/ConsentGate';
 import UndoToast from '../../features/undo/UndoToast';
 import OfflineBanner from '../../features/offline/OfflineBanner';
 import styles from './AppLayout.module.css';
@@ -124,6 +125,7 @@ export default function AppLayout() {
       </main>
 
       {/* ── Bottom tabbar ── */}
+      <ConsentGate />
       <UndoToast />
 
       <nav className={styles.tabbar} aria-label="Main navigation">

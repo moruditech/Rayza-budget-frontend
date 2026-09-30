@@ -1,8 +1,8 @@
 import api from './api';
 
 // FR-01 — register a new user. Returns { _id, name, email }.
-async function register({ name, email, password }) {
-  const { data } = await api.post('/auth/register', { name, email, password });
+async function register({ name, email, password, acceptTerms }) {
+  const { data } = await api.post('/auth/register', { name, email, password, acceptTerms });
   return data.data;
 }
 
@@ -34,5 +34,51 @@ async function changePassword({ currentPassword, newPassword }) {
   return data.data;
 }
 
-const authService = { register, login, refresh, logout, changePassword };
+// Sends a reset link if the email has an account. The answer is always the same.
+async function forgotPassword(email) {
+  const { data } = await api.post('/auth/forgot-password', { email });
+  return data;
+}
+
+// Sets a new password from the link in the email.
+async function resetPassword({ token, password }) {
+  await api.post('/auth/reset-password', { token, password });
+}
+
+// The signed-in person, including whether they must accept the current terms.
+async function me() {
+  const { data } = await api.get('/auth/me');
+  return data.data;
+}
+
+// Accept the current Terms of Use / Privacy Policy.
+async function acceptConsent() {
+  const { data } = await api.post('/auth/consent', { accept: true });
+  return data.data;
+}
+
+// Everything the app holds about the signed-in person (JSON).
+async function exportData() {
+  const { data } = await api.get('/account/export');
+  return data.data;
+}
+
+// Permanently deletes the account and all its data.
+async function deleteAccount(password) {
+  await api.delete('/account', { data: { password } });
+}
+
+const authService = {
+  register,
+  login,
+  refresh,
+  logout,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+  me,
+  acceptConsent,
+  exportData,
+  deleteAccount,
+};
 export default authService;

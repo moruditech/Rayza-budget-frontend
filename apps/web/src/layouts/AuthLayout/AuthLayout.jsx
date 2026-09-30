@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import LegalLinks from '../../features/legal/LegalLinks';
 import styles from './AuthLayout.module.css';
 
 // The SVG pots icon matches the brand mark used in the main app header.
@@ -33,6 +34,10 @@ export default function AuthLayout() {
         </div>
 
         <Outlet />
+      </div>
+
+      <div className={styles.legal}>
+        <LegalLinks />
       </div>
     </div>
   );

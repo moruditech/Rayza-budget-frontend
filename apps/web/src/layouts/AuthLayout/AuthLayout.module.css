@@ -1,6 +1,7 @@
 .shell {
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 24px 20px;
@@ -33,4 +34,8 @@
   font-weight: 600;
   font-size: 1.15rem;
   color: var(--ink);
+}
+
+.legal {
+  margin-top: 18px;
 }

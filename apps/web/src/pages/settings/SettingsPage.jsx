@@ -1,5 +1,6 @@
 import InstallAppCard from '../../features/pwa/InstallAppCard';
 import AppLockCard from '../../features/appLock/AppLockCard';
+import PrivacyDataCard from '../../features/account/PrivacyDataCard';
 import ChangePasswordForm from '../../features/auth/components/ChangePasswordForm';
 import { useLogoutMutation } from '../../features/auth/hooks/useAuth';
 import styles from './SettingsPage.module.css';
@@ -20,6 +21,9 @@ export default function SettingsPage() {
         <h3 className={styles.sectionTitle}>Change password</h3>
         <ChangePasswordForm />
       </section>
+
+      {/* Legal documents, data download and account deletion */}
+      <PrivacyDataCard />
 
       {/* Account */}
       <section className={styles.section}>

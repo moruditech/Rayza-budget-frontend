@@ -50,3 +50,18 @@ export function useLogoutMutation() {
     },
   });
 }
+
+// Ask for a password-reset email. The answer is the same whether or not the
+// address has an account, so the form just shows it.
+export function useForgotPasswordMutation() {
+  return useMutation({ mutationFn: (email) => authService.forgotPassword(email) });
+}
+
+// Set a new password from the emailed link, then go to login.
+export function useResetPasswordMutation() {
+  const navigate = useNavigate();
+  return useMutation({
+    mutationFn: authService.resetPassword,
+    onSuccess: () => navigate('/login', { replace: true, state: { passwordReset: true } }),
+  });
+}

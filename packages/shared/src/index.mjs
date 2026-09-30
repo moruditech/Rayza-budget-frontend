@@ -29,6 +29,10 @@ export const SPEND_LOG_TYPES = {
   TRANSFER_IN: 'TRANSFER_IN',
 };
 
+// Version of the Terms / Privacy / Cookie policies currently in force.
+// Keep in step with LEGAL_VERSION in the API's shared package.
+export const LEGAL_VERSION = '2026-10-01';
+
 export const ALERT_TYPES = {
   POT_APPROACHING_LIMIT: 'POT_APPROACHING_LIMIT',
   POT_OVER_BUDGET: 'POT_OVER_BUDGET',

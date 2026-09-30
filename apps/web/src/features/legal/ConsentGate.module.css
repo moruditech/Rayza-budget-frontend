@@ -1,0 +1,49 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 500; /* above the app and its dialogs, below the PIN lock */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.card {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.check input {
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  accent-color: var(--primary);
+}
+
+.logout {
+  all: unset;
+  box-sizing: border-box;
+  justify-self: center;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  text-decoration: underline;
+}
