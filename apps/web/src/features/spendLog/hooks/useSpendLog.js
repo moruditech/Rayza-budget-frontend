@@ -8,7 +8,7 @@ const PAGE_LIMIT = 20;
 // entries already on screen.
 //
 // `filters` is an object of optional query params:
-//   monthId, potId, lineItemId, type, paymentMethod, from, to
+//   monthId, potId, lineItemId, type, paymentMethod, search, minAmount, maxAmount, from, to
 //
 // Returns the standard useInfiniteQuery result. Callers flatten pages:
 //   const entries = data?.pages.flatMap(p => p.entries) ?? []

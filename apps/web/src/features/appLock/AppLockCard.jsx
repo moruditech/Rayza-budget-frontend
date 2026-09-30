@@ -45,10 +45,6 @@ function SetupModal({ canUseBiometric, onClose }) {
     <Modal title="Turn on app lock" onClose={busy ? () => {} : onClose}>
       <form onSubmit={submit} style={{ display: 'grid', gap: 12 }}>
         {error && <Alert variant="warn">{error}</Alert>}
-        <p className={styles.hint}>
-          Pick a PIN of 4 to 6 digits. The app will ask for it every time you leave
-          it and come back.
-        </p>
         <Input
           label="New PIN"
           type="password"
@@ -149,7 +145,6 @@ function DisableModal({ onClose }) {
     <Modal title="Turn off app lock" onClose={busy ? () => {} : onClose}>
       <form onSubmit={submit} style={{ display: 'grid', gap: 12 }}>
         {error && <Alert variant="warn">{error}</Alert>}
-        <p className={styles.hint}>Enter your PIN to turn the lock off.</p>
         <Input label="PIN" type="password" inputMode="numeric" autoComplete="off" maxLength={6}
           value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} />
         <Button type="submit" loading={busy}>Turn off</Button>
@@ -189,20 +184,13 @@ export default function AppLockCard() {
 
       {!config ? (
         <>
-          <p className={styles.hint}>
-            Protect your budget with a PIN
-            {bioAvailable ? ' or your fingerprint / face' : ''}. The app locks every
-            time you leave it and come back.
-          </p>
           <button className={styles.btnLogout} onClick={() => setModal('setup')} type="button">
             Turn on app lock
           </button>
         </>
       ) : (
         <>
-          <p className={styles.hint}>
-            App lock is on. It locks every time you leave the app and come back.
-          </p>
+          <p className={styles.hint}>App lock is on</p>
           {bioError && <Alert variant="warn">{bioError}</Alert>}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {bioAvailable && (

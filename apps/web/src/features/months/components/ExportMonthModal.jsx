@@ -29,10 +29,6 @@ export default function ExportMonthModal({ month, onClose }) {
       <div className={styles.body}>
         {error && <Alert variant="warn">{error}</Alert>}
 
-        <p className={styles.text}>
-          Includes income, pots, line items, sinking funds and every transaction in the month.
-        </p>
-
         <button
           className={styles.option}
           onClick={() => run('pdf')}
@@ -40,9 +36,8 @@ export default function ExportMonthModal({ month, onClose }) {
           type="button"
         >
           <span className={styles.optionTitle}>
-            {busy === 'pdf' ? 'Creating PDF…' : 'PDF statement'}
+            {busy === 'pdf' ? 'Creating PDF…' : 'PDF'}
           </span>
-          <span className={styles.optionHint}>Easy to read, share or print</span>
         </button>
 
         <button
@@ -52,9 +47,8 @@ export default function ExportMonthModal({ month, onClose }) {
           type="button"
         >
           <span className={styles.optionTitle}>
-            {busy === 'csv' ? 'Creating CSV…' : 'CSV spreadsheet'}
+            {busy === 'csv' ? 'Creating CSV…' : 'CSV'}
           </span>
-          <span className={styles.optionHint}>Opens in Excel or Google Sheets</span>
         </button>
       </div>
     </Modal>

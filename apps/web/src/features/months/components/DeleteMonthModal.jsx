@@ -35,18 +35,12 @@ export default function DeleteMonthModal({ month, onClose }) {
         {error && <Alert variant="warn">{error}</Alert>}
 
         <p className={styles.text}>
-          This permanently removes <strong>{label}</strong> with all of its income,
-          pots, line items and spending history. This cannot be undone.
-        </p>
-
-        <p className={styles.note}>
-          Other months are not changed. Money already carried into later months
-          (sinking fund balances, rollovers) stays as it is.
+          <strong>{label}</strong> with all its income, pots and spending will be removed.
         </p>
 
         {month.isLocked && (
           <Alert variant="warn">
-            This month is locked. Its health score and history will be lost too.
+            This month is locked.
           </Alert>
         )}
 

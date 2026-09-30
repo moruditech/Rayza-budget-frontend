@@ -3,6 +3,7 @@ import { useMonthStore } from '../../store/monthStore';
 import { useMonth } from '../../features/months/hooks/useMonth';
 import { useSpendLog } from '../../features/spendLog/hooks/useSpendLog';
 import PendingSpendsList from '../../features/offline/PendingSpendsList';
+import SpendLogSearch, { EMPTY_SEARCH } from '../../features/spendLog/components/SpendLogSearch';
 import SpendLogFilters from '../../features/spendLog/components/SpendLogFilters';
 import SpendLogTable from '../../components/shared/SpendLogTable/SpendLogTable';
 import Button from '../../components/ui/Button/Button';
@@ -31,9 +32,16 @@ export default function SpendLogPage() {
   // FR-10 — payment method filter (null = All).
   const [paymentMethod, setPaymentMethod] = useState(null);
 
+  const [search, setSearch] = useState(EMPTY_SEARCH);
+  const num = (v) => (v !== '' && Number.isFinite(Number(v)) ? Number(v) : undefined);
+
   const filters = {
     monthId: activeMonthId ?? undefined,
     paymentMethod: paymentMethod ?? undefined,
+    search: search.search || undefined,
+    potId: search.potId || undefined,
+    minAmount: num(search.minAmount),
+    maxAmount: num(search.maxAmount),
   };
 
   const {
@@ -51,6 +59,8 @@ export default function SpendLogPage() {
     <>
       {/* Spends saved on this phone that have not reached the server yet */}
       <PendingSpendsList month={month} />
+
+      <SpendLogSearch pots={month?.pots ?? []} value={search} onChange={setSearch} />
 
       {/* FR-10 — payment method filter chips */}
       <SpendLogFilters active={paymentMethod} onChange={setPaymentMethod} />

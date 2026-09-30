@@ -193,22 +193,14 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
             error={errors.targetAmount?.message}
             {...register('targetAmount', { valueAsNumber: true })}
           />
-          <p className={styles.hint}>
-            The amount above goes into this fund straight away and counts as
-            used in the pot. It is also added again every month.
-          </p>
 
           <Input
             id="goal-date"
-            label={earnsInterest ? 'Goal date (projection runs to here)' : 'Goal date (optional)'}
+            label="Goal date"
             type="date"
             error={errors.targetDate?.message}
             {...register('targetDate', { setValueAs: (v) => (v ? v : null) })}
           />
-          <p className={styles.hint}>
-            With a goal date the app tells you how much you need to put in each
-            month to reach the target, and whether you are on track.
-          </p>
 
           <label className={styles.checkRow}>
             <input type="checkbox" {...register('earnsInterest')} />
@@ -236,7 +228,7 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
 
       <Input
         id="due-day"
-        label="Due day of the month (optional)"
+        label="Due day (1-31)"
         type="number"
         inputMode="numeric"
         min="1"
@@ -247,10 +239,6 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
           setValueAs: (v) => (v === '' || v == null ? null : Number(v)),
         })}
       />
-      <p className={styles.hint}>
-        Set this for bills. You get a reminder a few days before it is due, until
-        you tap Mark paid.
-      </p>
 
       <label className={styles.checkRow}>
         <input type="checkbox" {...register('isRecurring')} />

@@ -40,8 +40,7 @@ export default function OfflineBanner() {
     <div className={styles.wrap} role="status">
       {!online && (
         <p className={styles.line}>
-          You are offline. Showing your last saved data
-          {waiting.length > 0 ? '.' : '; anything you log will sync when you are back online.'}
+          Offline: showing saved data
         </p>
       )}
 
@@ -49,7 +48,7 @@ export default function OfflineBanner() {
         <div className={styles.row}>
           <span className={styles.line}>
             {waiting.length} spend{waiting.length !== 1 ? 's' : ''} waiting to sync
-            {!online ? ' when you are back online' : ''}
+            
           </span>
           {online && (
             <button className={styles.btn} onClick={handleSync} disabled={syncing} type="button">

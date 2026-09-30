@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useUndoStore } from '../../../store/undoStore';
 import { useUpdateIncome, useDeleteIncome } from '../hooks/useIncome';
 import ConfirmDialog from '../../../components/ui/ConfirmDialog/ConfirmDialog';
 import { formatCurrency } from '../../../utils/formatCurrency';
@@ -13,6 +14,8 @@ function IncomeRow({ item, monthId, isLocked }) {
 
   const updateMutation = useUpdateIncome(monthId);
   const deleteMutation = useDeleteIncome(monthId);
+  const scheduleDelete = useUndoStore((s) => s.schedule);
+  const deleted        = useUndoStore((s) => !!s.hidden[`income:${item._id}`]);
 
   // Keep local state in sync when the server data refreshes after a save.
   useEffect(() => { setLabel(item.label); },        [item.label]);
@@ -45,6 +48,8 @@ function IncomeRow({ item, monthId, isLocked }) {
       }
     );
   };
+
+  if (deleted) return null;
 
   return (
     <div className={styles.row}>
@@ -87,17 +92,17 @@ function IncomeRow({ item, monthId, isLocked }) {
         <ConfirmDialog
           title={`Remove ${item.label}?`}
           confirmLabel="Remove"
-          loading={deleteMutation.isPending}
-          error={
-            deleteMutation.isError ? 'Could not remove this income. Please try again.' : null
-          }
-          onConfirm={() =>
-            deleteMutation.mutate(item._id, { onSuccess: () => setConfirmDelete(false) })
-          }
+          onConfirm={() => {
+            scheduleDelete({
+              key: `income:${item._id}`,
+              label: `${item.label} removed`,
+              commit: () => deleteMutation.mutateAsync(item._id),
+            });
+            setConfirmDelete(false);
+          }}
           onClose={() => setConfirmDelete(false)}
         >
-          <strong>{item.label}</strong> ({formatCurrency(item.amount)}) will be removed from
-          this month&apos;s income, which lowers what you have available to allocate.
+          <strong>{item.label}</strong> ({formatCurrency(item.amount)}) will be removed.
         </ConfirmDialog>
       )}
     </div>

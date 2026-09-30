@@ -56,19 +56,18 @@ export default function RecordInterestModal({ lineItem, potId, monthId, onClose 
         {errors.root && <Alert variant="warn">{errors.root.message}</Alert>}
 
         <p className={styles.balance}>
-          At {lineItem.annualInterestRate}% p.a. on {formatCurrency(balance)}, one month
-          should pay about <strong>R {expected.toFixed(2)}</strong>.{' '}
+          Expected <strong>R {expected.toFixed(2)}</strong>{' '}
           <button
             type="button"
             onClick={() => setValue('amount', Number(expected.toFixed(2)), { shouldValidate: true })}
             style={{ all: 'unset', cursor: 'pointer', color: 'var(--primary)', fontWeight: 600 }}
           >
-            Use this
+            Use
           </button>
         </p>
 
         <Input
-          label="Interest the bank paid"
+          label="Interest paid"
           type="number"
           inputMode="decimal"
           step="0.01"

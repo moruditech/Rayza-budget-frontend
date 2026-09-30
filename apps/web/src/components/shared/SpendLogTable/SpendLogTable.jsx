@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import ConfirmDialog from '../../ui/ConfirmDialog/ConfirmDialog';
+import { useUndoStore } from '../../../store/undoStore';
 import { useDeleteTransaction } from '../../../features/transactions/hooks/useTransactions';
 import TransactionForm from '../../../features/transactions/components/TransactionForm';
 import Modal from '../../ui/Modal/Modal';
@@ -43,9 +44,13 @@ function TxnRow({ entry, monthId, isLocked }) {
   const lineItemId = entry.lineItem?._id;
 
   const deleteMutation = useDeleteTransaction(monthId, potId, lineItemId);
+  const scheduleDelete = useUndoStore((s) => s.schedule);
+  const deleted        = useUndoStore((s) => !!s.hidden[`txn:${entry._id}`]);
   const iconColor = `var(${TYPE_COLOR[entry.pot?.type] ?? '--primary'})`;
   const isSpend   = !entry.type || entry.type === 'INSTANT_SPEND';
   const isIncoming = entry.type === 'TRANSFER_IN' || entry.type === 'SINKING_FUND_DEPOSIT' || entry.type === 'SINKING_FUND_INTEREST';
+
+  if (deleted) return null;
 
   return (
     <>
@@ -113,18 +118,18 @@ function TxnRow({ entry, monthId, isLocked }) {
       {confirmDelete && (
         <ConfirmDialog
           title="Delete this transaction?"
-          loading={deleteMutation.isPending}
-          error={
-            deleteMutation.isError ? 'Could not delete the transaction. Please try again.' : null
-          }
-          onConfirm={() =>
-            deleteMutation.mutate(entry._id, { onSuccess: () => setConfirmDelete(false) })
-          }
+          onConfirm={() => {
+            scheduleDelete({
+              key: `txn:${entry._id}`,
+              label: `${formatCurrency(entry.amount)} ${entry.lineItem?.name ?? 'spend'} deleted`,
+              commit: () => deleteMutation.mutateAsync(entry._id),
+            });
+            setConfirmDelete(false);
+          }}
           onClose={() => setConfirmDelete(false)}
         >
           <strong>{formatCurrency(entry.amount)}</strong> on{' '}
-          <strong>{entry.lineItem?.name}</strong> will be removed and the money goes back
-          to the pot. This cannot be undone.
+          <strong>{entry.lineItem?.name}</strong> will be removed.
         </ConfirmDialog>
       )}
 

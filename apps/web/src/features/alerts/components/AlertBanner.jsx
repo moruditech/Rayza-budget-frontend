@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useMonth } from '../../months/hooks/useMonth';
+import AddMoneyModal from '../../lineItems/components/AddMoneyModal';
 import Alert from '../../../components/ui/Alert/Alert';
 
 // ── Icons ────────────────────────────────────────────────────────────────
@@ -69,12 +72,46 @@ const CONFIG = {
   UNALLOCATED_INCOME:    { variant: 'warn',  icon: <WarnIcon /> },
   STALE_BUDGET:          { variant: 'warn',  icon: <WarnIcon /> },
   MONTH_READY_TO_LOCK:   { variant: 'ready', icon: <LockIcon /> },
+  POT_LEFTOVER:          { variant: 'ready', icon: <SparkIcon /> },
   BILL_DUE:              { variant: 'warn',  icon: <WarnIcon /> },
   BILL_OVERDUE:          { variant: 'warn',  icon: <WarnIcon /> },
 };
 
 // Renders a single alert from the GET /alerts response.
 // `alert` shape: { type, message, pot?, lineItem?, meta? }
+// "R 1 050 left in Build Home  [Add to Cash Built]" — opens Add money with the
+// suggested amount already filled in.
+function LeftoverAction({ alert }) {
+  const [open, setOpen] = useState(false);
+  const { monthId, potId, lineItemId, lineItemName, suggestedAmount } = alert.meta;
+  const { data: month } = useMonth(monthId);
+  const pot = month?.pots?.find((p) => p._id === potId);
+  const lineItem = pot?.lineItems?.find((li) => li._id === lineItemId);
+  if (!pot || !lineItem) return null;
+
+  return (
+    <>
+      {' · '}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        style={{ all: 'unset', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline' }}
+      >
+        Add to {lineItemName}
+      </button>
+      {open && (
+        <AddMoneyModal
+          lineItem={lineItem}
+          pot={pot}
+          monthId={monthId}
+          defaultAmount={suggestedAmount}
+          onClose={() => setOpen(false)}
+        />
+      )}
+    </>
+  );
+}
+
 export default function AlertBanner({ alert }) {
   const { variant = 'warn', icon = <WarnIcon /> } =
     CONFIG[alert.type] ?? {};
@@ -90,6 +127,7 @@ export default function AlertBanner({ alert }) {
           </Link>
         </>
       )}
+      {alert.type === 'POT_LEFTOVER' && <LeftoverAction alert={alert} />}
       {(alert.type === 'BILL_DUE' || alert.type === 'BILL_OVERDUE') && (
         <>
           {' · '}

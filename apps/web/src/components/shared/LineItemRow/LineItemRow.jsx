@@ -14,6 +14,7 @@ import { useDeleteLineItem } from '../../../features/lineItems/hooks/useLineItem
 import { formatCurrency } from '../../../utils/formatCurrency';
 import { shortDate } from '../../../utils/formatDate';
 import { describeFundEntry } from '../../../utils/fundActivityText';
+import { useUndoStore } from '../../../store/undoStore';
 import { useMarkPaid } from '../../../features/lineItems/hooks/useLineItems';
 import styles from './LineItemRow.module.css';
 
@@ -46,6 +47,8 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const deleteMutation = useDeleteLineItem(monthId, pot._id);
+  const scheduleDelete = useUndoStore((s) => s.schedule);
+  const deleted        = useUndoStore((s) => !!s.hidden[`lineItem:${lineItem._id}`]);
   const isSinking      = lineItem.type === LINE_ITEM_TYPES.SINKING_FUND;
   const dotColor       = TYPE_COLOR[pot.type] ?? '--primary';
   const balance        = lineItem.accumulatedBalance ?? 0;
@@ -59,6 +62,8 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const isOverdue      = isBill && !lineItem.isPaid && dueDate && dueDate.getTime() < todayUtc;
   const progressCheck  = lineItem.progressCheck;
   const earnsInterest  = lineItem.annualInterestRate != null;
+
+  if (deleted) return null; // deleted (or waiting out the undo window)
 
   return (
     <>
@@ -281,22 +286,22 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
       {confirmDelete && (
         <ConfirmDialog
           title={`Delete ${lineItem.name}?`}
-          loading={deleteMutation.isPending}
-          error={
-            deleteMutation.isError ? 'Could not delete this item. Please try again.' : null
-          }
           warning={
             isSinking && balance > 0
               ? `This fund holds ${formatCurrency(balance)}. That money will no longer be tracked.`
               : null
           }
-          onConfirm={() =>
-            deleteMutation.mutate(lineItem._id, { onSuccess: () => setConfirmDelete(false) })
-          }
+          onConfirm={() => {
+            scheduleDelete({
+              key: `lineItem:${lineItem._id}`,
+              label: `${lineItem.name} deleted`,
+              commit: () => deleteMutation.mutateAsync(lineItem._id),
+            });
+            setConfirmDelete(false);
+          }}
           onClose={() => setConfirmDelete(false)}
         >
-          <strong>{lineItem.name}</strong> and its spending history will be permanently
-          removed from this pot. This cannot be undone.
+          <strong>{lineItem.name}</strong> and its spending history will be removed.
         </ConfirmDialog>
       )}
 

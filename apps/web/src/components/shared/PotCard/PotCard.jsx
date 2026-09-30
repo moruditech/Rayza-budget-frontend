@@ -5,6 +5,7 @@ import LineItemForm from '../../../features/lineItems/components/LineItemForm';
 import PotForm from '../../../features/pots/components/PotForm';
 import Modal from '../../ui/Modal/Modal';
 import ConfirmDialog from '../../ui/ConfirmDialog/ConfirmDialog';
+import { useUndoStore } from '../../../store/undoStore';
 import { useDeletePot } from '../../../features/pots/hooks/usePots';
 import { formatCurrency } from '../../../utils/formatCurrency';
 import { calcPercentage } from '../../../utils/calcPercentage';
@@ -50,10 +51,10 @@ export default function PotCard({ pot, monthId, isLocked }) {
   const [showLineItem,   setShowLineItem]   = useState(false);
   const [showEditPot,    setShowEditPot]    = useState(false);
   const [confirmDelete,  setConfirmDelete]  = useState(false);
-  // Set when the API says the pot has spending history — needs a stronger warning.
-  const [hasHistory,     setHasHistory]     = useState(false);
 
   const deleteMutation = useDeletePot(monthId);
+  const scheduleDelete = useUndoStore((s) => s.schedule);
+  const deleted        = useUndoStore((s) => !!s.hidden[`pot:${pot._id}`]);
 
   const spent     = pot.spentAmount     ?? 0;
   const committed = pot.committedAmount ?? 0; // allocated to sinking funds
@@ -63,28 +64,19 @@ export default function PotCard({ pot, monthId, isLocked }) {
   const pct       = calcPercentage(used, budget);
   const color  = TYPE_COLOR[pot.type] ?? '--primary';
 
-  // Step 1 — the Delete button only opens the confirmation dialog.
-  // Step 2 — confirming tries a normal delete; if the API reports
-  // POT_HAS_HISTORY the dialog turns into a stronger warning and the next
-  // confirm forces the delete.
-  const closeConfirm = () => {
+  // The dialog is the confirmation, so the delete is forced (the API's own
+  // spending-history check would only ask the same question twice). The real
+  // request goes out after the undo window.
+  const confirmDeletePot = () => {
+    scheduleDelete({
+      key: `pot:${pot._id}`,
+      label: `${pot.name} deleted`,
+      commit: () => deleteMutation.mutateAsync({ id: pot._id, force: true }),
+    });
     setConfirmDelete(false);
-    setHasHistory(false);
-    deleteMutation.reset();
   };
 
-  const handleConfirmDelete = () => {
-    deleteMutation.mutate(
-      { id: pot._id, force: hasHistory },
-      {
-        onSuccess: closeConfirm,
-        onError: (err) => {
-          const code = err.response?.data?.error?.code;
-          if (code === 'POT_HAS_HISTORY') setHasHistory(true);
-        },
-      }
-    );
-  };
+  if (deleted) return null;
 
   return (
     <>
@@ -209,23 +201,13 @@ export default function PotCard({ pot, monthId, isLocked }) {
       {confirmDelete && (
         <ConfirmDialog
           title={`Delete ${pot.name}?`}
-          confirmLabel={hasHistory ? 'Delete anyway' : 'Delete'}
-          loading={deleteMutation.isPending}
-          error={
-            deleteMutation.isError && !hasHistory
-              ? 'Could not delete this pot. Please try again.'
-              : null
-          }
           warning={
-            hasHistory
-              ? 'This pot has spending history. Deleting it removes that history for good.'
-              : null
+            spent > 0 ? `${pot.name} has ${formatCurrency(spent)} of spending that will be removed too.` : null
           }
-          onConfirm={handleConfirmDelete}
-          onClose={closeConfirm}
+          onConfirm={confirmDeletePot}
+          onClose={() => setConfirmDelete(false)}
         >
-          <strong>{pot.name}</strong> and all of its line items will be permanently
-          removed from this month. This cannot be undone.
+          <strong>{pot.name}</strong> and all of its line items will be removed.
         </ConfirmDialog>
       )}
 

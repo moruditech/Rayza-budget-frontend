@@ -48,3 +48,13 @@ export function useCategoryBreakdown(monthId) {
     staleTime: 120_000,
   });
 }
+
+// Pot-by-pot comparison with the previous month. Requires a monthId.
+export function usePotComparison(monthId) {
+  return useQuery({
+    queryKey: ['reports', 'pot-comparison', monthId],
+    queryFn:  () => reportsService.getPotComparison(monthId),
+    enabled:  !!monthId,
+    staleTime: 120_000,
+  });
+}

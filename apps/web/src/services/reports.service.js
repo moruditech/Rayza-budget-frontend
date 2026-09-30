@@ -30,11 +30,18 @@ async function getCategoryBreakdown(monthId) {
   return data.data;
 }
 
+// How each pot did against the previous month (matched by pot name).
+async function getPotComparison(monthId) {
+  const { data } = await api.get('/reports/pot-comparison', { params: { monthId } });
+  return data.data;
+}
+
 const reportsService = {
   getIncomeVsSpend,
   getSpendingByPot,
   getSinkingFundProgress,
   getHealthHistory,
   getCategoryBreakdown,
+  getPotComparison,
 };
 export default reportsService;

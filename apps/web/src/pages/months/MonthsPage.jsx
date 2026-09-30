@@ -109,7 +109,6 @@ export default function MonthsPage() {
     <>
       <div className={styles.pageHead}>
         <h2 className={styles.pageTitle}>Months</h2>
-        <p className={styles.pageHint}>Tap a month to view it. Lock a month once it is done.</p>
       </div>
 
       {/* Month cards — newest first (API already returns them that way) */}

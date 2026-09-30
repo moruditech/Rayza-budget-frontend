@@ -5,10 +5,12 @@ import {
   useSinkingFundProgress,
   useHealthHistory,
   useCategoryBreakdown,
+  usePotComparison,
 } from '../../features/reports/hooks/useReports';
 import IncomeVsSpendChart      from '../../features/reports/components/IncomeVsSpendChart';
 import CategoryBreakdownChart  from '../../features/reports/components/CategoryBreakdownChart';
 import HealthHistoryChart      from '../../features/reports/components/HealthHistoryChart';
+import PotComparison         from '../../features/reports/components/PotComparison';
 import SpendingByPotChart      from '../../features/reports/components/SpendingByPotChart';
 import SinkingFundProgressChart from '../../features/reports/components/SinkingFundProgressChart';
 import styles from './ReportsPage.module.css';
@@ -35,6 +37,7 @@ export default function ReportsPage() {
   const { data: sinkingFundProgress } = useSinkingFundProgress(6);
   const { data: healthHistory       } = useHealthHistory(6);
   const { data: categoryBreakdown   } = useCategoryBreakdown(activeMonthId);
+  const { data: potComparison       } = usePotComparison(activeMonthId);
 
   return (
     <>
@@ -51,6 +54,10 @@ export default function ReportsPage() {
       {/* FR-14 — Spending by Pot — Recharts horizontal bars */}
       <Section title="Spending by Pot">
         <SpendingByPotChart data={spendingByPot ?? []} />
+      </Section>
+
+      <Section title="Vs Last Month">
+        <PotComparison data={potComparison} />
       </Section>
 
       {/* FR-14 — Budget Health History — Recharts coloured bars */}

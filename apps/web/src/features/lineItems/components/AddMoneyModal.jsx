@@ -14,7 +14,7 @@ import styles from './MarkUsedModal.module.css';
 // create a new line item. It is a one-off top-up for this month: the money
 // leaves the pot's remaining budget and lands in the fund balance now, but is
 // not repeated next month (only the fund's normal allocation is).
-export default function AddMoneyModal({ lineItem, pot, monthId, onClose }) {
+export default function AddMoneyModal({ lineItem, pot, monthId, defaultAmount, onClose }) {
   const remaining = Math.max(0, pot.remaining ?? 0);
 
   const schema = z.object({
@@ -31,7 +31,10 @@ export default function AddMoneyModal({ lineItem, pot, monthId, onClose }) {
     setValue,
     formState: { errors },
     setError,
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: defaultAmount != null ? { amount: defaultAmount } : undefined,
+  });
 
   const mutation = useDeposit(monthId, pot._id);
 

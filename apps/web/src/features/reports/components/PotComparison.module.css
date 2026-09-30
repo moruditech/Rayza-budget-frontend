@@ -1,0 +1,49 @@
+.table {
+  display: grid;
+  font-size: 0.82rem;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.3fr);
+  gap: 8px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+}
+
+.head {
+  font-size: 0.72rem;
+  color: var(--ink-muted);
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.total {
+  border-bottom: none;
+  font-weight: 600;
+}
+
+.good { color: var(--primary); }
+.bad  { color: var(--warning); }
+
+.flat,
+.tag,
+.empty {
+  color: var(--ink-muted);
+}
+
+.tag {
+  font-size: 0.72rem;
+}
