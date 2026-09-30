@@ -69,6 +69,8 @@ const CONFIG = {
   UNALLOCATED_INCOME:    { variant: 'warn',  icon: <WarnIcon /> },
   STALE_BUDGET:          { variant: 'warn',  icon: <WarnIcon /> },
   MONTH_READY_TO_LOCK:   { variant: 'ready', icon: <LockIcon /> },
+  BILL_DUE:              { variant: 'warn',  icon: <WarnIcon /> },
+  BILL_OVERDUE:          { variant: 'warn',  icon: <WarnIcon /> },
 };
 
 // Renders a single alert from the GET /alerts response.
@@ -85,6 +87,14 @@ export default function AlertBanner({ alert }) {
           {' · '}
           <Link to="/months" style={{ color: 'inherit', fontWeight: 600 }}>
             Review &amp; lock
+          </Link>
+        </>
+      )}
+      {(alert.type === 'BILL_DUE' || alert.type === 'BILL_OVERDUE') && (
+        <>
+          {' · '}
+          <Link to="/pots" style={{ color: 'inherit', fontWeight: 600 }}>
+            Open pots
           </Link>
         </>
       )}

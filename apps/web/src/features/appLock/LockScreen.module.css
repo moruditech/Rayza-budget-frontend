@@ -1,0 +1,155 @@
+.screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  color: var(--ink);
+  overflow-y: auto;
+}
+
+.brand {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+  stroke: var(--primary);
+  fill: none;
+  stroke-width: 1.6;
+}
+
+.title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.sub {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
+.dots {
+  display: flex;
+  gap: 14px;
+  min-height: 16px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-muted);
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.dotOn {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.message {
+  min-height: 1.2em;
+  font-size: 0.82rem;
+  color: var(--warning);
+  text-align: center;
+}
+
+.pad {
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  gap: 14px;
+}
+
+.key {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.key:active {
+  background: var(--primary-soft);
+}
+
+.keyAlt {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-muted);
+}
+
+.icon {
+  width: 30px;
+  height: 30px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.forgot {
+  all: unset;
+  box-sizing: border-box;
+  cursor: pointer;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: var(--ink-muted);
+  text-decoration: underline;
+}
+
+/* Log-out confirmation, drawn over the keypad */
+.confirm {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--bg);
+}
+
+.confirmCard {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 360px;
+}
+
+.confirmTitle {
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+.confirmText {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.danger {
+  background: var(--warning);
+  color: #fff;
+}

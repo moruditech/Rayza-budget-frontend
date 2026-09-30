@@ -1,4 +1,5 @@
 import InstallAppCard from '../../features/pwa/InstallAppCard';
+import AppLockCard from '../../features/appLock/AppLockCard';
 import ChangePasswordForm from '../../features/auth/components/ChangePasswordForm';
 import { useLogoutMutation } from '../../features/auth/hooks/useAuth';
 import styles from './SettingsPage.module.css';
@@ -10,6 +11,9 @@ export default function SettingsPage() {
     <>
       {/* Install as a phone app (PWA) */}
       <InstallAppCard />
+
+      {/* PIN / fingerprint lock for this device */}
+      <AppLockCard />
 
       {/* Change password */}
       <section className={styles.section}>

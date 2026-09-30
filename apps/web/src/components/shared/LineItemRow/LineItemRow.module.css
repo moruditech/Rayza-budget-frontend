@@ -226,3 +226,19 @@
 
 .goalOk     { color: var(--primary); }
 .goalBehind { color: var(--warning); }
+
+/* Bills: due date + Mark paid */
+.billRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.billText {
+  font-size: 0.75rem;
+  color: var(--ink-muted);
+}
+
+.billPaid    { color: var(--primary); font-weight: 600; }
+.billOverdue { color: var(--warning); font-weight: 600; }

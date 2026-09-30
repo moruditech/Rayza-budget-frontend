@@ -14,6 +14,7 @@ import { useDeleteLineItem } from '../../../features/lineItems/hooks/useLineItem
 import { formatCurrency } from '../../../utils/formatCurrency';
 import { shortDate } from '../../../utils/formatDate';
 import { describeFundEntry } from '../../../utils/fundActivityText';
+import { useMarkPaid } from '../../../features/lineItems/hooks/useLineItems';
 import styles from './LineItemRow.module.css';
 
 // Maps pot type → CSS custom property for the instant-spend dot colour.
@@ -22,6 +23,11 @@ const TYPE_COLOR = {
   SAVING:     '--primary',
   INVESTMENT: '--gold',
 };
+
+// "25 Oct" — the bill's due date (a UTC calendar day, so no timezone drift).
+function formatDueDate(date) {
+  return date.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+}
 
 function formatTargetDate(value) {
   if (!value) return '';
@@ -45,6 +51,12 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
   const balance        = lineItem.accumulatedBalance ?? 0;
   const projection     = lineItem.projection;
   const activity       = lineItem.activity ?? [];
+  const markPaid       = useMarkPaid(monthId, pot._id);
+  const isBill         = lineItem.dueDay != null;
+  const dueDate        = lineItem.dueDate ? new Date(lineItem.dueDate) : null;
+  const today          = new Date();
+  const todayUtc       = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const isOverdue      = isBill && !lineItem.isPaid && dueDate && dueDate.getTime() < todayUtc;
   const progressCheck  = lineItem.progressCheck;
   const earnsInterest  = lineItem.annualInterestRate != null;
 
@@ -79,6 +91,34 @@ export default function LineItemRow({ lineItem, pot, monthId, isLocked }) {
               {formatCurrency(lineItem.spentAmount ?? 0)} of{' '}
               {formatCurrency(lineItem.allocatedAmount)} used
             </span>
+          )}
+
+          {/* Bills: due date, and a Mark paid button the person controls */}
+          {isBill && (
+            <div className={styles.billRow}>
+              <span
+                className={[
+                  styles.billText,
+                  lineItem.isPaid ? styles.billPaid : isOverdue ? styles.billOverdue : '',
+                ].join(' ')}
+              >
+                {lineItem.isPaid
+                  ? 'Paid'
+                  : `${isOverdue ? 'Overdue, was due' : 'Due'} ${
+                      dueDate ? formatDueDate(dueDate) : `the ${lineItem.dueDay}th`
+                    }`}
+              </span>
+              {!isLocked && (
+                <button
+                  className={styles.chipFund}
+                  onClick={() => markPaid.mutate({ id: lineItem._id, paid: !lineItem.isPaid })}
+                  disabled={markPaid.isPending}
+                  type="button"
+                >
+                  {lineItem.isPaid ? 'Undo' : 'Mark paid'}
+                </button>
+              )}
+            </div>
           )}
 
           {/* Interest-bearing fund: projected future value beside the balance */}

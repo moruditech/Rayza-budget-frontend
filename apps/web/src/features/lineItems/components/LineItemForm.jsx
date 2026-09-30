@@ -27,6 +27,7 @@ const schema = z
     earnsInterest:      z.boolean().optional().default(false),
     annualInterestRate: z.number().min(0, 'Cannot be negative').max(100, 'Max 100%').nullable().optional(),
     targetDate:         z.string().nullable().optional(),
+    dueDay:             z.number().int('Whole numbers only').min(1, 'Between 1 and 31').max(31, 'Between 1 and 31').nullable().optional(),
   })
   .superRefine((data, ctx) => {
     if (data.type === LINE_ITEM_TYPES.SINKING_FUND) {
@@ -83,6 +84,7 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
           targetAmount:        lineItem.targetAmount ?? undefined,
           earnsInterest:       lineItem.annualInterestRate != null,
           annualInterestRate:  lineItem.annualInterestRate ?? null,
+          dueDay:              lineItem.dueDay ?? null,
           targetDate:          lineItem.targetDate ? String(lineItem.targetDate).slice(0, 10) : null,
         }
       : {
@@ -129,6 +131,8 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
     if (payload.type !== LINE_ITEM_TYPES.INSTANT_SPEND) {
       payload.targetDate = payload.targetDate || null;
     }
+    // null clears the due day when editing; the item is then no longer a bill.
+    payload.dueDay = payload.dueDay ?? null;
 
     if (isEditing) {
       mutation.mutate(
@@ -229,6 +233,24 @@ export default function LineItemForm({ monthId, potId, lineItem, onSuccess }) {
           )}
         </div>
       )}
+
+      <Input
+        id="due-day"
+        label="Due day of the month (optional)"
+        type="number"
+        inputMode="numeric"
+        min="1"
+        max="31"
+        placeholder="e.g. 25"
+        error={errors.dueDay?.message}
+        {...register('dueDay', {
+          setValueAs: (v) => (v === '' || v == null ? null : Number(v)),
+        })}
+      />
+      <p className={styles.hint}>
+        Set this for bills. You get a reminder a few days before it is due, until
+        you tap Mark paid.
+      </p>
 
       <label className={styles.checkRow}>
         <input type="checkbox" {...register('isRecurring')} />

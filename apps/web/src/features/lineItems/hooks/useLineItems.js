@@ -64,6 +64,15 @@ export function useWithdraw(monthId, potId) {
   });
 }
 
+// Mark a bill as paid (or undo). Ends its due-date reminder.
+export function useMarkPaid(monthId, potId) {
+  const invalidate = useInvalidate(monthId);
+  return useMutation({
+    mutationFn: ({ id, paid }) => lineItemsService.markPaid(monthId, potId, id, paid),
+    onSuccess: invalidate,
+  });
+}
+
 // Log interest the bank actually paid into a fund.
 export function useRecordInterest(monthId, potId) {
   const invalidate = useInvalidate(monthId);

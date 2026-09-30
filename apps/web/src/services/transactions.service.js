@@ -2,10 +2,11 @@ import api from './api';
 
 // FR-05 — log a spend transaction against an INSTANT_SPEND line item.
 // Response includes updated pot spentAmount and surplus.
-async function createTransaction(monthId, potId, lineItemId, payload) {
+async function createTransaction(monthId, potId, lineItemId, payload, config) {
   const { data } = await api.post(
     `/months/${monthId}/pots/${potId}/line-items/${lineItemId}/transactions`,
-    payload
+    payload,
+    config
   );
   return data.data;
 }

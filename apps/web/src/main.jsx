@@ -5,7 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { router } from './router/index';
-import { useAuthStore } from './store/authStore';
+import { useAuthStore, hasRememberedSession } from './store/authStore';
+import LockGate from './features/appLock/LockGate';
 import authService from './services/auth.service';
 
 import './styles/global.css';
@@ -34,12 +35,18 @@ function AuthInitializer({ children }) {
   const [ready, setReady] = useState(false);
   const setToken = useAuthStore((s) => s.setToken);
   const logout   = useAuthStore((s) => s.logout);
+  const enterOfflineMode = useAuthStore((s) => s.enterOfflineMode);
 
   useEffect(() => {
     authService
       .refresh()
       .then(({ accessToken }) => setToken(accessToken))
-      .catch(() => logout()) // No valid cookie — user must log in.
+      .catch((err) => {
+        // No answer at all (no signal) on a device that had a session: open
+        // the app with saved data instead of throwing the person to login.
+        if (!err?.response && hasRememberedSession()) enterOfflineMode();
+        else logout(); // No valid cookie — user must log in.
+      })
       .finally(() => setReady(true));
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -66,7 +73,9 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthInitializer>
-        <RouterProvider router={router} />
+        <LockGate>
+          <RouterProvider router={router} />
+        </LockGate>
       </AuthInitializer>
       {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
     </QueryClientProvider>

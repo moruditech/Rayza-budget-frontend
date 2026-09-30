@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useMonthStore } from '../../store/monthStore';
 import { useMonth } from '../../features/months/hooks/useMonth';
 import { useSpendLog } from '../../features/spendLog/hooks/useSpendLog';
+import PendingSpendsList from '../../features/offline/PendingSpendsList';
 import SpendLogFilters from '../../features/spendLog/components/SpendLogFilters';
 import SpendLogTable from '../../components/shared/SpendLogTable/SpendLogTable';
 import Button from '../../components/ui/Button/Button';
@@ -48,6 +49,9 @@ export default function SpendLogPage() {
 
   return (
     <>
+      {/* Spends saved on this phone that have not reached the server yet */}
+      <PendingSpendsList month={month} />
+
       {/* FR-10 — payment method filter chips */}
       <SpendLogFilters active={paymentMethod} onChange={setPaymentMethod} />
 

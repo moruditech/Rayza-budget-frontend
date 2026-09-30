@@ -115,6 +115,8 @@ export function buildExportModel(month, entries = []) {
     num(li.allocatedAmount),
     li.type === 'INSTANT_SPEND' ? num(li.spentAmount) : '',
     li.type === 'SINKING_FUND' ? num(li.accumulatedBalance) : '',
+    li.dueDay != null ? li.dueDay : '',
+    li.dueDay != null ? (li.isPaid ? 'Paid' : 'Not paid') : '',
   ]);
 
   const fundRows = items
@@ -172,7 +174,7 @@ export function buildExportModel(month, entries = []) {
     headers: {
       income: ['Source', 'Amount (R)'],
       pots: ['Pot', 'Type', 'Budget (R)', 'Rollover (R)', 'Spent (R)', 'In funds (R)', 'Left (R)', 'Received (R)', 'Moved out (R)'],
-      items: ['Pot', 'Line item', 'Type', 'Allocated (R)', 'Spent (R)', 'Fund balance (R)'],
+      items: ['Pot', 'Line item', 'Type', 'Allocated (R)', 'Spent (R)', 'Fund balance (R)', 'Due day', 'Bill status'],
       funds: ['Fund', 'Pot', 'Balance (R)', 'Target (R)', 'Progress (%)', 'Goal date', 'Interest rate (% p.a.)', 'Interest earned (R)', 'Projected value (R)', 'Needed per month (R)', 'Status'],
       transactions: ['Date', 'Type', 'Item', 'Pot', 'Amount (R)', 'Method', 'Note'],
     },
@@ -308,8 +310,11 @@ export async function buildPdf(model) {
 
   heading('Line items');
   table(
-    ['Pot', 'Line item', 'Type', 'Allocated', 'Spent', 'Fund balance'],
-    model.items.map((r) => [r[0], r[1], r[2], money(r[3]), money(r[4]), money(r[5])]),
+    ['Pot', 'Line item', 'Type', 'Allocated', 'Spent', 'Fund balance', 'Bill'],
+    model.items.map((r) => [
+      r[0], r[1], r[2], money(r[3]), money(r[4]), money(r[5]),
+      r[6] === '' ? '' : `Due ${r[6]}th - ${r[7]}`,
+    ]),
     { 3: right, 4: right, 5: right }
   );
 

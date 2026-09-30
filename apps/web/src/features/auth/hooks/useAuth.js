@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate, useLocation } from 'react-router-dom';
 import authService from '../../../services/auth.service';
-import { useAuthStore } from '../../../store/authStore';
+import { useAuthStore, clearLocalUserData } from '../../../store/authStore';
 
 // FR-01 — register mutation. On success navigates to /login with a flag
 // so the login page can show a "registration successful" message.
@@ -45,6 +45,7 @@ export function useLogoutMutation() {
       // onSettled runs on both success and error — if the API call fails
       // (e.g. token already expired), we still want to clear the client.
       logout();
+      clearLocalUserData();
       window.location.href = '/login';
     },
   });

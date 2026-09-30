@@ -50,6 +50,15 @@ async function withdraw(monthId, potId, id, payload) {
   return data.data;
 }
 
+// Mark a bill (an item with a due day) as paid, or undo it. payload: { paid }
+async function markPaid(monthId, potId, id, paid) {
+  const { data } = await api.post(
+    `/months/${monthId}/pots/${potId}/line-items/${id}/paid`,
+    { paid }
+  );
+  return data.data;
+}
+
 // Log interest the bank actually paid into an interest-bearing fund.
 // payload: { amount, note?, date? }
 async function recordInterest(monthId, potId, id, payload) {
@@ -85,6 +94,7 @@ const lineItemsService = {
   withdraw,
   deposit,
   recordInterest,
+  markPaid,
   transfer,
 };
 export default lineItemsService;

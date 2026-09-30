@@ -3,6 +3,7 @@ import { Outlet, NavLink, Link } from 'react-router-dom';
 import { useMonths } from '../../features/months/hooks/useMonths';
 import { useMonthStore } from '../../store/monthStore';
 import { monthLabel } from '../../utils/formatDate';
+import OfflineBanner from '../../features/offline/OfflineBanner';
 import styles from './AppLayout.module.css';
 
 // ─── SVG icons ────────────────────────────────────────────────────────────
@@ -117,6 +118,7 @@ export default function AppLayout() {
 
       {/* ── Page content ── */}
       <main className={styles.main}>
+        <OfflineBanner />
         <Outlet />
       </main>
 
